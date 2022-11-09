@@ -1,0 +1,27 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B18A0748-AA08-4DC2-9F3F-5D103FC88680}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecantosSystem.Api", "src\RecantosSystem.Api\RecantosSystem.Api.csproj", "{F35F974B-87B1-40EC-814E-72E3531CF74A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F35F974B-87B1-40EC-814E-72E3531CF74A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F35F974B-87B1-40EC-814E-72E3531CF74A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F35F974B-87B1-40EC-814E-72E3531CF74A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F35F974B-87B1-40EC-814E-72E3531CF74A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{F35F974B-87B1-40EC-814E-72E3531CF74A} = {B18A0748-AA08-4DC2-9F3F-5D103FC88680}
+	EndGlobalSection
+EndGlobal
