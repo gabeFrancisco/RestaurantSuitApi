@@ -1,8 +1,7 @@
 namespace RecantosSystem.Api.Models
 {
-	public class ProductOrder
+	public class ProductOrder : BaseEntity
 	{
-		public int Id { get; set; }
 		public Product Product { get; set; }
 		public int Quantity { get; set; }
 		public decimal Total

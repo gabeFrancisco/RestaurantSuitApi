@@ -1,8 +1,8 @@
 namespace RecantosSystem.Api.Models
 {
-    public class Table
+    public class Table : BaseEntity
     {
-        public int Id { get; set; }
+        public int Number { get; set; }
         public int Chairs { get; set; }
     }
 }
