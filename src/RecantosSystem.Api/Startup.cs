@@ -13,6 +13,8 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using RecantosSystem.Api.Context;
+using RecantosSystem.Api.Interfaces;
+using RecantosSystem.Api.Services;
 
 namespace RecantosSystem.Api
 {
@@ -31,6 +33,8 @@ namespace RecantosSystem.Api
 			string mySqlConnection = Configuration.GetConnectionString("DefaultConnection");
 			services.AddDbContext<AppDbContext>(options =>
 				options.UseMySql(mySqlConnection, ServerVersion.AutoDetect(mySqlConnection)));
+            
+            services.AddScoped<ICategoryService, CategoryService>();
 
 			services.AddControllers();
 			services.AddSwaggerGen(c =>
