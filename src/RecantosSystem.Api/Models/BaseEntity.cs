@@ -1,9 +1,11 @@
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace RecantosSystem.Api.Models
 {
 	public abstract class BaseEntity
 	{
+		[Key]
 		public int Id { get; set; }
 		private DateTime? _createdAt;
 		public DateTime? CreatedAt

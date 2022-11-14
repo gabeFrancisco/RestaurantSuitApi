@@ -1,6 +1,6 @@
 namespace RecantosSystem.Api.Models.Enums
 {
-    public enum Role
+    public enum Role : int
     {
         ADM,
         WORKER
