@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -18,8 +19,10 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RecantosSystem.Api.Context;
+using RecantosSystem.Api.DTOs.Mappings;
 using RecantosSystem.Api.Interfaces;
 using RecantosSystem.Api.Services;
+using RecantosSystem.Api.Services.Security;
 
 namespace RecantosSystem.Api
 {
@@ -35,15 +38,27 @@ namespace RecantosSystem.Api
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-			//!SECTION - AppDbContext setup
+			// AppDbContext setup
 			string mySqlConnection = Configuration.GetConnectionString("DefaultConnection");
 			services.AddDbContext<AppDbContext>(options =>
 				options.UseMySql(mySqlConnection, ServerVersion.AutoDetect(mySqlConnection)));
 
-			//!SECTION - Dependency injection 
-			services.AddScoped<ICategoryService, CategoryService>();
+			// AutoMapper config
+			var mappingConfig = new MapperConfiguration(mc =>
+			{
+                mc.AddProfile(new MappingProfile());
+			});
 
-			//!SECTION - Bellow is the Jwt Bearer config.
+            IMapper mapper = mappingConfig.CreateMapper();
+
+			// Dependency injection 
+            services.AddSingleton(mapper);
+
+			services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<TokenService>();
+
+			// Bellow is the Jwt Bearer config.
 			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 				.AddJwtBearer(options =>
 					options.TokenValidationParameters = new TokenValidationParameters
@@ -61,7 +76,7 @@ namespace RecantosSystem.Api
 
 			services.AddControllers();
 
-			//!SECTION - Swagger config
+			// Swagger config
 			services.AddSwaggerGen(c =>
 			{
 				c.SwaggerDoc("v1", new OpenApiInfo { Title = "RecantosSystem.Api", Version = "v1" });
@@ -108,8 +123,8 @@ namespace RecantosSystem.Api
 			app.UseHttpsRedirection();
 
 			app.UseRouting();
-            
-            app.UseAuthentication();
+
+			app.UseAuthentication();
 			app.UseAuthorization();
 
 			app.UseEndpoints(endpoints =>

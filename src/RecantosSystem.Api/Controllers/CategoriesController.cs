@@ -1,10 +1,14 @@
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RecantosSystem.Api.Interfaces;
 
 namespace RecantosSystem.Api.Controllers
 {
+	[ApiController]
+	[ApiConventionType(typeof(DefaultApiConventions))]
 	[Route("api/[controller]")]
+	[Authorize(AuthenticationSchemes = "Bearer")]
 	public class CategoriesController : ControllerBase
 	{
 		private readonly ICategoryService _categoryService;
