@@ -52,7 +52,10 @@ namespace RecantosSystem.Api
             IMapper mapper = mappingConfig.CreateMapper();
 
 			// Dependency injection 
+            services.AddHttpContextAccessor();
             services.AddSingleton(mapper);
+            services.AddSingleton<IUserAccessor, HttpUserAccessor>();
+            services.AddLogging();
 
 			services.AddScoped<ICategoryService, CategoryService>();
             services.AddScoped<IUserService, UserService>();
