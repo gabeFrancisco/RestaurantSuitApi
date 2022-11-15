@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace RecantosSystem.Api.Models
 {
 	public class ProductOrder : BaseEntity
@@ -9,5 +11,8 @@ namespace RecantosSystem.Api.Models
 		{
 			get => Quantity * Product.Price;
 		}
+		public virtual User User { get; set; }
+		[Required]
+		public int UserId { get; set; }
 	}
 }

@@ -3,16 +3,21 @@ using RecantosSystem.Api.Models.Enums;
 
 namespace RecantosSystem.Api.Models
 {
-    public class User : BaseEntity
-    {
-        [Required]
+	public class User : BaseEntity
+	{
+		[Required]
 		[MaxLength(30)]
-        public string Name { get; set; }
-        [Required]
+		public string Username { get; set; }
+		[Required]
+		[MaxLength(30)]
+		public string Name { get; set; }
+		[Required]
 		[MaxLength(100)]
-        public string Surname { get; set; }
-        [Required]
-        public string Password { get; set; }
-        public Role Role { get; set; }
-    }
+		public string Surname { get; set; }
+		[Required]
+		public string Email { get; set; }
+		[Required]
+		public string Password { get; set; }
+		public Role Role { get; set; }
+	}
 }

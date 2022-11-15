@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using RecantosSystem.Api.Context;
 using RecantosSystem.Api.Interfaces;
 using RecantosSystem.Api.Models;
@@ -12,9 +14,9 @@ namespace RecantosSystem.Api.Services
         {
             _context = context;
         }
-		public IEnumerable<Category> GetAllCategories()
+		public async Task<IEnumerable<Category>> GetAllCategoriesAsync()
 		{
-			return _context.Categories;
+			return await _context.Categories.ToListAsync();
 		}
 	}
 }

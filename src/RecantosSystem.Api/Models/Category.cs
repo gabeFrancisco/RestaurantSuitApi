@@ -10,5 +10,9 @@ namespace RecantosSystem.Api.Models
 		[Required]
 		[MaxLength(10)]
 		public string Color { get; set; }
+		public virtual User User { get; set; }
+		[Required]
+		public int UserId { get; set; }
+
 	}
 }
