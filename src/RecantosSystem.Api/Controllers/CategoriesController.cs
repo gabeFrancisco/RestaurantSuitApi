@@ -9,8 +9,8 @@ using RecantosSystem.Api.Interfaces;
 namespace RecantosSystem.Api.Controllers
 {
 	[ApiController]
-	[ApiConventionType(typeof(DefaultApiConventions))]
 	[Route("api/[controller]")]
+	[ApiConventionType(typeof(DefaultApiConventions))]
 	[Authorize(AuthenticationSchemes = "Bearer")]
 	public class CategoriesController : ControllerBase
 	{

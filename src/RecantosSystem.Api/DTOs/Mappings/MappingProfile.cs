@@ -9,6 +9,7 @@ namespace RecantosSystem.Api.DTOs.Mappings
         {
             CreateMap<User, UserDTO>().ReverseMap();
             CreateMap<Category, CategoryDTO>().ReverseMap();
+            CreateMap<Customer, CustomerDTO>().ReverseMap();
         }
     }
 }
