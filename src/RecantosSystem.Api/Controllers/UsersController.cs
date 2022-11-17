@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using RecantosSystem.Api.DTOs;
 using RecantosSystem.Api.Interfaces;
 
@@ -12,9 +13,11 @@ namespace RecantosSystem.Api.Controllers
 	public class UsersController : ControllerBase
 	{
 		private readonly IUserService _userService;
-		public UsersController(IUserService userService)
+        private readonly ILogger<UsersController> _logger;
+		public UsersController(IUserService userService, ILogger<UsersController> logger)
 		{
 			_userService = userService;
+            _logger = logger;
 		}
 
 		/// <summary>
@@ -35,7 +38,10 @@ namespace RecantosSystem.Api.Controllers
 			}
 			catch
 			{
-				return StatusCode(StatusCodes.Status500InternalServerError, "An error has occurred while registering the user.");
+				return StatusCode(
+                    StatusCodes.Status500InternalServerError, 
+                    "An error has occurred while registering the user."
+                );
 			}
 		}
 
@@ -47,6 +53,7 @@ namespace RecantosSystem.Api.Controllers
 		[HttpPost("login")]
 		public async Task<ActionResult> Login([FromBody] LoginDTO loginDto)
 		{
+            _logger.LogInformation(loginDto.ToString());
 			try
 			{
 				if (!ModelState.IsValid)
@@ -58,7 +65,10 @@ namespace RecantosSystem.Api.Controllers
 			}
 			catch
 			{
-				return StatusCode(StatusCodes.Status500InternalServerError, "An error has occurred while logging the user.");
+				return StatusCode(
+                    StatusCodes.Status500InternalServerError, 
+                    "An error has occurred while logging the user."
+                );
 			}
 		}
 	}
