@@ -22,6 +22,7 @@ using RecantosSystem.Api.Context;
 using RecantosSystem.Api.DTOs.Mappings;
 using RecantosSystem.Api.Interfaces;
 using RecantosSystem.Api.Services;
+using RecantosSystem.Api.Services.Logging;
 using RecantosSystem.Api.Services.Security;
 
 namespace RecantosSystem.Api
@@ -38,7 +39,7 @@ namespace RecantosSystem.Api
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
-            services.AddLogging();
+			services.AddLogging();
 
 			// AppDbContext setup
 			string mySqlConnection = Configuration.GetConnectionString("DefaultConnection");
@@ -48,19 +49,20 @@ namespace RecantosSystem.Api
 			// AutoMapper config
 			var mappingConfig = new MapperConfiguration(mc =>
 			{
-                mc.AddProfile(new MappingProfile());
+				mc.AddProfile(new MappingProfile());
 			});
 
-            IMapper mapper = mappingConfig.CreateMapper();
+			IMapper mapper = mappingConfig.CreateMapper();
 
 			// Dependency injection 
-            services.AddHttpContextAccessor();
-            services.AddSingleton(mapper);
-            services.AddSingleton<IUserAccessor, HttpUserAccessor>();
-            services.AddLogging();
+			services.AddHttpContextAccessor();
+			services.AddSingleton(mapper);
+			services.AddSingleton<IUserAccessor, HttpUserAccessor>();
+			services.AddLogging();
 
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<TokenService>();
+			services.AddScoped<LogService>();
+			services.AddScoped<IUserService, UserService>();
+			services.AddScoped<TokenService>();
 			services.AddScoped<ICategoryService, CategoryService>();
 			services.AddScoped<ICustomerService, CustomerService>();
 

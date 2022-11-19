@@ -33,6 +33,7 @@ namespace RecantosSystem.Api.Controllers
 			}
 			catch
 			{
+				
 				return StatusCode(
 					StatusCodes.Status500InternalServerError,
 					"An error has occurred while fetching all categories."
@@ -87,11 +88,11 @@ namespace RecantosSystem.Api.Controllers
 			}
 		}
 
-        /// <summary>
-        /// Updates a existing category in the database
-        /// </summary>
-        /// <param name="categoryDto">The new category data</param>
-        /// <returns>Return the updated category</returns>
+		/// <summary>
+		/// Updates a existing category in the database
+		/// </summary>
+		/// <param name="categoryDto">The new category data</param>
+		/// <returns>Return the updated category</returns>
 		[HttpPut]
 		public async Task<IActionResult> Put([FromBody] CategoryDTO categoryDto)
 		{
@@ -113,11 +114,11 @@ namespace RecantosSystem.Api.Controllers
 			}
 		}
 
-        /// <summary>
-        /// Removes a category from the database
-        /// </summary>
-        /// <param name="id">The category's id that will be removed</param>
-        /// <returns>Returns true if the category was deleted</returns>
+		/// <summary>
+		/// Removes a category from the database
+		/// </summary>
+		/// <param name="id">The category's id that will be removed</param>
+		/// <returns>Returns true if the category was deleted</returns>
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> Delete(int id)
 		{

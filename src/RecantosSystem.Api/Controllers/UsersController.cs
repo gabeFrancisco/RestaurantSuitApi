@@ -1,9 +1,11 @@
+using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using RecantosSystem.Api.DTOs;
 using RecantosSystem.Api.Interfaces;
+using RecantosSystem.Api.Services.Logging;
 
 namespace RecantosSystem.Api.Controllers
 {
@@ -13,11 +15,11 @@ namespace RecantosSystem.Api.Controllers
 	public class UsersController : ControllerBase
 	{
 		private readonly IUserService _userService;
-        private readonly ILogger<UsersController> _logger;
-		public UsersController(IUserService userService, ILogger<UsersController> logger)
+		private readonly LogService _logService;
+		public UsersController(IUserService userService, LogService logService)
 		{
 			_userService = userService;
-            _logger = logger;
+			_logService = logService;
 		}
 
 		/// <summary>
@@ -36,39 +38,40 @@ namespace RecantosSystem.Api.Controllers
 				}
 				return Ok(await _userService.RegisterUser(userDto));
 			}
-			catch
+			catch (Exception ex)
 			{
+				_logService.LogException(ex, this.GetType().Name);
 				return StatusCode(
-                    StatusCodes.Status500InternalServerError, 
-                    "An error has occurred while registering the user."
-                );
+					StatusCodes.Status500InternalServerError,
+					"An error has occurred while registering the user."
+				);
 			}
 		}
 
-        /// <summary>
-        /// Logs an existing user in the system.
-        /// </summary>
-        /// <param name="loginDto">The login data transfer object.</param>
-        /// <returns></returns>
+		/// <summary>
+		/// Logs an existing user in the system.
+		/// </summary>
+		/// <param name="loginDto">The login data transfer object.</param>
+		/// <returns></returns>
 		[HttpPost("login")]
 		public async Task<ActionResult> Login([FromBody] LoginDTO loginDto)
 		{
-            _logger.LogInformation(loginDto.ToString());
 			try
 			{
 				if (!ModelState.IsValid)
 				{
-                    return BadRequest("The login data is incorrect");
+					return BadRequest("The login data is incorrect");
 				}
 
-                return Ok(await _userService.Login(loginDto));
+				return Ok(await _userService.Login(loginDto));
 			}
-			catch
+			catch (Exception ex)
 			{
+				_logService.LogException(ex, this.GetType().Name);
 				return StatusCode(
-                    StatusCodes.Status500InternalServerError, 
-                    "An error has occurred while logging the user."
-                );
+					StatusCodes.Status500InternalServerError,
+					"An error has occurred while logging the user."
+				);
 			}
 		}
 	}

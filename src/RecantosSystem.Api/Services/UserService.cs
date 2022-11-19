@@ -8,6 +8,7 @@ using RecantosSystem.Api.DTOs;
 using RecantosSystem.Api.Interfaces;
 using RecantosSystem.Api.Models;
 using RecantosSystem.Api.Models.Enums;
+using RecantosSystem.Api.Services.Logging;
 using RecantosSystem.Api.Services.Security;
 
 namespace RecantosSystem.Api.Services
@@ -17,12 +18,17 @@ namespace RecantosSystem.Api.Services
 		private readonly AppDbContext _context;
 		private readonly TokenService _tokenService;
 		private readonly IMapper _mapper;
+		private LogService _logService;
 
-		public UserService(AppDbContext context, TokenService tokenService, IMapper mapper)
+		public UserService(AppDbContext context,
+						   TokenService tokenService,
+						   IMapper mapper,
+						   LogService logService) 
 		{
 			_context = context;
 			_tokenService = tokenService;
 			_mapper = mapper;
+			_logService = logService;
 		}
 		public async Task<dynamic> RegisterUser(UserDTO userDto)
 		{
@@ -42,6 +48,7 @@ namespace RecantosSystem.Api.Services
 			await _context.SaveChangesAsync();
 
 			userDto.Password = "**********";
+			_logService.LogMessage($"User {userDto.Username} registered with success!");
 
 			return new
 			{
@@ -70,12 +77,13 @@ namespace RecantosSystem.Api.Services
 			{
 				return "Password is incorrect";
 			}
+			_logService.LogMessage($"User {loginDto.Username} signed in with success!");
 
 			return new
 			{
-                User = user,
-                Token = _tokenService.GenerateJwTToken(user.Username, user.Id),
-                Message = $"The user {user.Username} was logged succesfully!"
+				User = user,
+				Token = _tokenService.GenerateJwTToken(user.Username, user.Id),
+				Message = $"The user {user.Username} was logged succesfully!"
 			};
 		}
 	}

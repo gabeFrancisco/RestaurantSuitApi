@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using RecantosSystem.Api.Context;
 using RecantosSystem.Api.DTOs;
 using RecantosSystem.Api.Interfaces;
 using RecantosSystem.Api.Models;
+using RecantosSystem.Api.Services.Logging;
 
 namespace RecantosSystem.Api.Services
 {
@@ -17,16 +19,13 @@ namespace RecantosSystem.Api.Services
 		private readonly AppDbContext _context;
 		private readonly IMapper _mapper;
 		private IUserAccessor _userAccessor;
-		private ILogger<CategoryService> _logger;
 		public CategoryService(AppDbContext context,
 							   IMapper mapper,
-							   IUserAccessor userAccessor,
-							   ILogger<CategoryService> logger)
+							   IUserAccessor userAccessor)
 		{
 			_context = context;
 			_mapper = mapper;
 			_userAccessor = userAccessor;
-			_logger = logger;
 		}
 
 		public int UserId => _userAccessor.UserId;
@@ -83,9 +82,6 @@ namespace RecantosSystem.Api.Services
 		{
 			var category = await this.GetSingleCategoryAsync(categoryId);
 			var updatedCategory = _mapper.Map<CategoryDTO, Category>(categoryDto);
-
-			_logger.LogInformation($"\n\n\n{category.UserId}");
-			_logger.LogInformation($"\n\n{updatedCategory.UserId}\n\n\n");
 
 			updatedCategory.UpdatedAt = DateTime.UtcNow;
 			updatedCategory.CreatedAt = category.CreatedAt;

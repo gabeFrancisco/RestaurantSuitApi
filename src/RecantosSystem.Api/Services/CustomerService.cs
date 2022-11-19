@@ -23,6 +23,12 @@ namespace RecantosSystem.Api.Services
 			_userAccessor = userAccessor;
 		}
 		public int UserId => _userAccessor.UserId;
+		private async Task<Customer> GetSingleCustomerAsync(int customerId)
+		{
+			return await _context.Customers
+				.Where(customer => customer.UserId == this.UserId)
+				.FirstOrDefaultAsync();
+		}
 
 		public async Task<IEnumerable<CustomerDTO>> GetAllAsync()
 		{
@@ -32,6 +38,13 @@ namespace RecantosSystem.Api.Services
 
 			return _mapper.Map<List<CustomerDTO>>(customers);
 		}
+
+		public async Task<CustomerDTO> GetAsync(int customerId)
+		{
+			var customer = await this.GetSingleCustomerAsync(customerId);
+			return _mapper.Map<Customer, CustomerDTO>(customer);
+		}
+
 		public async Task<CustomerDTO> AddAsync(CustomerDTO customerDto)
 		{
 			if (customerDto == null)
@@ -48,20 +61,27 @@ namespace RecantosSystem.Api.Services
 
 			return customerDto;
 		}
-
-		public Task<bool> DeleteAsync(int customerId)
+		public async Task<CustomerDTO> UpdateAsync(CustomerDTO customerDto, int customerId)
 		{
-			throw new System.NotImplementedException();
+			var customer = await this.GetSingleCustomerAsync(customerId);
+			var updateCustomer = _mapper.Map<CustomerDTO, Customer>(customerDto);
+
+			updateCustomer.UpdatedAt = DateTime.UtcNow;
+			updateCustomer.CreatedAt = customer.CreatedAt;
+			updateCustomer.UserId = customer.UserId;
+
+			_context.Entry(customer).CurrentValues.SetValues(updateCustomer);
+			await _context.SaveChangesAsync();
+
+			return _mapper.Map<Customer, CustomerDTO>(customer);
 		}
-
-		public Task<CustomerDTO> GetAsync(int customerId)
+		public async Task<bool> DeleteAsync(int customerId)
 		{
-			throw new System.NotImplementedException();
-		}
+			var customer = await this.GetSingleCustomerAsync(customerId);
+			_context.Customers.Remove(customer);
+			await _context.SaveChangesAsync();
 
-		public Task<CustomerDTO> UpdateAsync(CustomerDTO customerDto)
-		{
-			throw new System.NotImplementedException();
+			return true;
 		}
 	}
 }
