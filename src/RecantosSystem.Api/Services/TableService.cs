@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,31 +37,59 @@ namespace RecantosSystem.Api.Services
 
 		private async Task<Table> GetSingleTableAsync(int tableId)
 		{
-            return await _context.Tables 
-                .FirstOrDefaultAsync(
-                    table => table.Id == tableId
-                    && table.UserId == this.UserId
-                );
+			return await _context.Tables
+				.FirstOrDefaultAsync(
+					table => table.Id == tableId
+					&& table.UserId == this.UserId
+				);
 		}
 
-		public Task<TableDTO> GetAsync(int id)
+		public async Task<TableDTO> GetAsync(int id)
 		{
-			throw new System.NotImplementedException();
+			var table = await this.GetSingleTableAsync(id);
+			return _mapper.Map<Table, TableDTO>(table);
 		}
 
-		public Task<TableDTO> AddAsync(TableDTO entity)
+		public async Task<TableDTO> AddAsync(TableDTO tableDto)
 		{
-			throw new System.NotImplementedException();
+			if (tableDto == null)
+			{
+                throw new NullReferenceException("Table data transfer is null");
+			}
+
+            var table = _mapper.Map<TableDTO, Table>(tableDto);
+            table.UserId = this.UserId;
+            table.CreatedAt = DateTime.UtcNow;
+
+            _context.Tables.Add(table);
+            await _context.SaveChangesAsync();
+
+            return tableDto;
 		}
 
-		public Task<TableDTO> UpdateAsync(TableDTO entity, int id)
+		public async Task<TableDTO> UpdateAsync(TableDTO tableDto, int id)
 		{
-			throw new System.NotImplementedException();
+			var table = await this.GetSingleTableAsync(id);
+            var updatedTable = _mapper.Map<TableDTO, Table>(tableDto);
+
+            updatedTable.UpdatedAt = DateTime.UtcNow;
+            updatedTable.CreatedAt = table.CreatedAt;
+            updatedTable.UserId = this.UserId;
+
+            _context.Entry(table).CurrentValues.SetValues(updatedTable);
+            await _context.SaveChangesAsync();
+
+            return  _mapper.Map<Table, TableDTO>(updatedTable);
 		}
 
-		public Task<bool> DeleteAsync(int id)
+		public async Task<bool> DeleteAsync(int id)
 		{
-			throw new System.NotImplementedException();
+			var table = await this.GetSingleTableAsync(id);
+
+            _context.Tables.Remove(table);
+            await _context.SaveChangesAsync();
+
+            return true;
 		}
 	}
 }

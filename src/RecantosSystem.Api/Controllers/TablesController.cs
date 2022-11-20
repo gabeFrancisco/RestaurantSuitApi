@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using RecantosSystem.Api.DTOs;
 using RecantosSystem.Api.Interfaces;
 using RecantosSystem.Api.Services.Logging;
 
@@ -25,33 +26,34 @@ namespace RecantosSystem.Api.Controllers
 		[HttpGet]
 		public async Task<IActionResult> GetAll()
 		{
-			try
-			{
-				return Ok(await _tableService.GetAllAsync());
-			}
-			catch
-			{
-				return StatusCode(
-					StatusCodes.Status500InternalServerError,
-					"An error has occurred while fetching all tables."
-				);
-			}
+			return Ok(await _tableService.GetAllAsync());
 		}
 
-		[HttpGet]
+		[HttpGet("{id}")]
 		public async Task<IActionResult> Get(int id)
 		{
-			try
-			{
-				return Ok(await _tableService.GetAsync(id));
-			}
-			catch
-			{
-				return StatusCode(
-					StatusCodes.Status500InternalServerError,
-					"An error has occurred while fetching all tables."
-				);
-			}
+			return Ok(await _tableService.GetAsync(id));
+		}
+
+		[HttpPost]
+		[Authorize(Roles = "ADM")]
+		public async Task<IActionResult> Post([FromBody] TableDTO tableDto)
+		{
+			return Ok(await _tableService.AddAsync(tableDto));
+		}
+
+		[Authorize(Roles = "ADM")]
+		[HttpPut]
+		public async Task<IActionResult> Put([FromBody] TableDTO tableDto)
+		{
+			return Ok(await _tableService.UpdateAsync(tableDto, tableDto.Id));
+		}
+
+		[Authorize(Roles = "ADM")]
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> Delete(int tableId)
+		{
+			return Ok(await _tableService.DeleteAsync(tableId));
 		}
 	}
 }

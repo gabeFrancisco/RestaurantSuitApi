@@ -20,6 +20,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using RecantosSystem.Api.Context;
 using RecantosSystem.Api.DTOs.Mappings;
+using RecantosSystem.Api.Filters;
 using RecantosSystem.Api.Interfaces;
 using RecantosSystem.Api.Services;
 using RecantosSystem.Api.Services.Logging;
@@ -83,7 +84,11 @@ namespace RecantosSystem.Api
 						)
 					});
 
-			services.AddControllers();
+			services.AddControllers(options => 
+				{
+					options.Filters.Add<ExceptionsAttribute>();
+				}
+			);
 
 			// Swagger config
 			services.AddSwaggerGen(c =>

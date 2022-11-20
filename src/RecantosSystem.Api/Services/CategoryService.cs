@@ -86,7 +86,7 @@ namespace RecantosSystem.Api.Services
 
 			updatedCategory.UpdatedAt = DateTime.UtcNow;
 			updatedCategory.CreatedAt = category.CreatedAt;
-            updatedCategory.UserId = category.UserId;
+			updatedCategory.UserId = category.UserId;
 
 			_context.Entry(category).CurrentValues.SetValues(updatedCategory);
 			await _context.SaveChangesAsync();

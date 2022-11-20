@@ -15,12 +15,13 @@ namespace RecantosSystem.Api.Services.Security
 			_config = config;
 		}
 
-		public string GenerateJwTToken(string username, int userId)
+		public string GenerateJwTToken(string username, int userId, string userRole)
 		{
             var claims = new[]
             {
                 new Claim(ClaimTypes.Name, username),
-                new Claim(ClaimTypes.NameIdentifier, userId.ToString())
+                new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
+                new Claim(ClaimTypes.Role, userRole)
             };
 
             var key = new SymmetricSecurityKey(

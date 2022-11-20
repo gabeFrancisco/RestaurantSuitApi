@@ -30,22 +30,11 @@ namespace RecantosSystem.Api.Controllers
 		[HttpPost("register")]
 		public async Task<ActionResult> Register([FromBody] UserDTO userDto)
 		{
-			try
+			if (!ModelState.IsValid)
 			{
-				if (!ModelState.IsValid)
-				{
-					return BadRequest("The user data is incorrect!");
-				}
-				return Ok(await _userService.RegisterUser(userDto));
+				return BadRequest("The user data is incorrect!");
 			}
-			catch (Exception ex)
-			{
-				_logService.LogException(ex, this.GetType().Name);
-				return StatusCode(
-					StatusCodes.Status500InternalServerError,
-					"An error has occurred while registering the user."
-				);
-			}
+			return Ok(await _userService.RegisterUser(userDto));
 		}
 
 		/// <summary>
@@ -56,23 +45,12 @@ namespace RecantosSystem.Api.Controllers
 		[HttpPost("login")]
 		public async Task<ActionResult> Login([FromBody] LoginDTO loginDto)
 		{
-			try
+			if (!ModelState.IsValid)
 			{
-				if (!ModelState.IsValid)
-				{
-					return BadRequest("The login data is incorrect");
-				}
+				return BadRequest("The login data is incorrect");
+			}
 
-				return Ok(await _userService.Login(loginDto));
-			}
-			catch (Exception ex)
-			{
-				_logService.LogException(ex, this.GetType().Name);
-				return StatusCode(
-					StatusCodes.Status500InternalServerError,
-					"An error has occurred while logging the user."
-				);
-			}
+			return Ok(await _userService.Login(loginDto));
 		}
 	}
 }

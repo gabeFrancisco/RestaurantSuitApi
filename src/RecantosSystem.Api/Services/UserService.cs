@@ -82,7 +82,7 @@ namespace RecantosSystem.Api.Services
 			return new
 			{
 				User = user,
-				Token = _tokenService.GenerateJwTToken(user.Username, user.Id),
+				Token = _tokenService.GenerateJwTToken(user.Username, user.Id, user.Role.ToString()),
 				Message = $"The user {user.Username} was logged succesfully!"
 			};
 		}
