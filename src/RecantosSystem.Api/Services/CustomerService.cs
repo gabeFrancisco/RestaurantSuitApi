@@ -26,8 +26,10 @@ namespace RecantosSystem.Api.Services
 		private async Task<Customer> GetSingleCustomerAsync(int customerId)
 		{
 			return await _context.Customers
-				.Where(customer => customer.UserId == this.UserId)
-				.FirstOrDefaultAsync();
+				.FirstOrDefaultAsync(
+					customer => customer.Id == customerId
+					&& customer.UserId == this.UserId
+				);
 		}
 
 		public async Task<IEnumerable<CustomerDTO>> GetAllAsync()

@@ -65,6 +65,7 @@ namespace RecantosSystem.Api
 			services.AddScoped<TokenService>();
 			services.AddScoped<ICategoryService, CategoryService>();
 			services.AddScoped<ICustomerService, CustomerService>();
+			services.AddScoped<ITableService, TableService>();
 
 			// Bellow is the Jwt Bearer config.
 			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

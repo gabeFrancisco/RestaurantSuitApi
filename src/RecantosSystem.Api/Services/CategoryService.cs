@@ -69,8 +69,9 @@ namespace RecantosSystem.Api.Services
 		{
 			return await _context.Categories
 				.FirstOrDefaultAsync(cat =>
-				cat.Id == categoryId
-				&& cat.UserId == this.UserId);
+					cat.Id == categoryId
+					&& cat.UserId == this.UserId
+			);
 		}
 
 		public async Task<CategoryDTO> GetAsync(int categoryId)
