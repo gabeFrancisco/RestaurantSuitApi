@@ -4,6 +4,7 @@ namespace RecantosSystem.Api.DTOs
 {
 	public class CustomerDTO
 	{
+		public int Id { get; set; }
 		[Required]
 		[MaxLength(100)]
 		public string Name { get; set; }

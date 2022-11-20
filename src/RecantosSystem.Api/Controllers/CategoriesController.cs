@@ -20,10 +20,6 @@ namespace RecantosSystem.Api.Controllers
 			_categoryService = categoryService;
 		}
 
-		/// <summary>
-		/// Return all categories from the database
-		/// </summary>
-		/// <returns>A list object containing categories</returns>
 		[HttpGet]
 		public async Task<IActionResult> Get()
 		{
@@ -41,11 +37,6 @@ namespace RecantosSystem.Api.Controllers
 			}
 		}
 
-		/// <summary>
-		/// Create a new Category into the database
-		/// </summary>
-		/// <param name="categoryDTO">Category data transfer object</param>
-		/// <returns>If the operation is done succesfully, it returns the category dto</returns>
 		[HttpPost]
 		public async Task<IActionResult> Create([FromBody] CategoryDTO categoryDTO)
 		{
@@ -67,11 +58,6 @@ namespace RecantosSystem.Api.Controllers
 			}
 		}
 
-		/// <summary>
-		/// Read a category from the database
-		/// </summary>
-		/// <param name="id">The category id</param>
-		/// <returns>Return the a category dto.</returns>
 		[HttpGet("{id}")]
 		public async Task<IActionResult> Get(int id)
 		{
@@ -88,11 +74,6 @@ namespace RecantosSystem.Api.Controllers
 			}
 		}
 
-		/// <summary>
-		/// Updates a existing category in the database
-		/// </summary>
-		/// <param name="categoryDto">The new category data</param>
-		/// <returns>Return the updated category</returns>
 		[HttpPut]
 		public async Task<IActionResult> Put([FromBody] CategoryDTO categoryDto)
 		{
@@ -114,11 +95,6 @@ namespace RecantosSystem.Api.Controllers
 			}
 		}
 
-		/// <summary>
-		/// Removes a category from the database
-		/// </summary>
-		/// <param name="id">The category's id that will be removed</param>
-		/// <returns>Returns true if the category was deleted</returns>
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> Delete(int id)
 		{

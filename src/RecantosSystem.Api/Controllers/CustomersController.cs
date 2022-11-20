@@ -34,6 +34,21 @@ namespace RecantosSystem.Api.Controllers
 				);
 			}
 		}
+		[HttpGet("{id}")]
+		public async Task<IActionResult> Get(int customerId)
+		{
+			try
+			{
+				return Ok(await _customerService.GetAsync(customerId));
+			}
+			catch
+			{
+				return StatusCode(
+					StatusCodes.Status500InternalServerError,
+					"An error has occurred while reading customers."
+				);
+			}
+		}
 
 		[HttpPost]
 		public async Task<IActionResult> Post([FromBody] CustomerDTO customerDto)
@@ -55,18 +70,39 @@ namespace RecantosSystem.Api.Controllers
 			}
 		}
 
-		[HttpGet("{id}")]
-		public async Task<IActionResult> Get(int customerId)
+		[HttpPut]
+		public async Task<IActionResult> Put([FromBody] CustomerDTO customerDTO)
 		{
-            try
+			try
 			{
-				return Ok(await _customerService.GetAsync(customerId));
+				if (!ModelState.IsValid)
+				{
+					return BadRequest(ModelState);
+				}
+
+				return Ok(await _customerService.UpdateAsync(customerDTO, customerDTO.Id));
 			}
 			catch
 			{
 				return StatusCode(
 					StatusCodes.Status500InternalServerError,
-					"An error has occurred while reading customers."
+					"An error has occurred while updating the customer"
+				);
+			}
+		}
+
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> Delete(int id)
+		{
+			try
+			{
+				return Ok(await _customerService.DeleteAsync(id));
+			}
+			catch
+			{
+				return StatusCode(
+					StatusCodes.Status500InternalServerError,
+					"An error has occurred while removing the customer"
 				);
 			}
 		}
