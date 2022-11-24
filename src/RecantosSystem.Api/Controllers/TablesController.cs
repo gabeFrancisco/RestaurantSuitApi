@@ -1,6 +1,5 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using RecantosSystem.Api.DTOs;
 using RecantosSystem.Api.Interfaces;
@@ -23,6 +22,7 @@ namespace RecantosSystem.Api.Controllers
 			_logService = logService;
 		}
 
+		[Authorize(Roles = "ADM")]
 		[HttpGet]
 		public async Task<IActionResult> GetAll()
 		{
@@ -51,9 +51,9 @@ namespace RecantosSystem.Api.Controllers
 
 		[Authorize(Roles = "ADM")]
 		[HttpDelete("{id}")]
-		public async Task<IActionResult> Delete(int tableId)
+		public async Task<IActionResult> Delete(int id)
 		{
-			return Ok(await _tableService.DeleteAsync(tableId));
+			return Ok(await _tableService.DeleteAsync(id));
 		}
 	}
 }

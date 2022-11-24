@@ -13,6 +13,5 @@ namespace RecantosSystem.Api.Models
 		public virtual User User { get; set; }
 		[Required]
 		public int UserId { get; set; }
-
 	}
 }

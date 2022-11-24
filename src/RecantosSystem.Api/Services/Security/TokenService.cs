@@ -3,6 +3,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 namespace RecantosSystem.Api.Services.Security
@@ -10,9 +11,11 @@ namespace RecantosSystem.Api.Services.Security
 	public class TokenService
 	{
 		private readonly IConfiguration _config;
-		public TokenService(IConfiguration config)
+        private readonly ILogger<TokenService> _logger;
+		public TokenService(IConfiguration config, ILogger<TokenService> logger)
 		{
 			_config = config;
+            _logger = logger;
 		}
 
 		public string GenerateJwTToken(string username, int userId, string userRole)
@@ -23,7 +26,6 @@ namespace RecantosSystem.Api.Services.Security
                 new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
                 new Claim(ClaimTypes.Role, userRole)
             };
-
             var key = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(_config["Jwt:Key"])
             );
