@@ -19,5 +19,7 @@ namespace RecantosSystem.Api.Models
 		[Required]
 		public string Password { get; set; }
 		public Role Role { get; set; }
+		public virtual WorkGroup WorkGroup { get; set; }
+		public int WorkGroupId { get; set; }
 	}
 }

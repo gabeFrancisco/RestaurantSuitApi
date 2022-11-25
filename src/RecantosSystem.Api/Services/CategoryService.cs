@@ -14,7 +14,7 @@ using RecantosSystem.Api.Services.Logging;
 
 namespace RecantosSystem.Api.Services
 {
-	public class CategoryService : ICategoryService, IUserAccessor
+	public class CategoryService : ICategoryService
 	{
 		private readonly AppDbContext _context;
 		private readonly IMapper _mapper;
@@ -28,7 +28,9 @@ namespace RecantosSystem.Api.Services
 			_userAccessor = userAccessor;
 		}
 
-		public int UserId => _userAccessor.UserId;
+		public int UserId => 
+
+		public User User => throw new NotImplementedException();
 
 		/// <summary>
 		/// Returns all the categories from the database
@@ -37,7 +39,7 @@ namespace RecantosSystem.Api.Services
 		public async Task<IEnumerable<CategoryDTO>> GetAllAsync()
 		{
 			var categories = await _context.Categories
-				.Where(cat => cat.UserId == this.UserId)
+				.Where(cat => cat.WorkGroupId == this.UserId)
 				.ToListAsync();
 
 			return _mapper.Map<List<CategoryDTO>>(categories);
@@ -65,14 +67,29 @@ namespace RecantosSystem.Api.Services
 			return categoryDTO;
 		}
 
-		private async Task<Category> GetSingleCategoryAsync(int categoryId)
+		private async Task<Category> GetSin'gleCategoryAsync(int categoryId)
 		{
 			return await _context.Categories
 				.FirstOrDefaultAsync(cat =>
 					cat.Id == categoryId
 					&& cat.UserId == this.UserId
 			);
+
+		public Task<CategoryDTO> GetAsync(int id)
+		{
+			throw new NotImplementedException();
 		}
+
+		public Task<CategoryDTO> UpdateAsync(CategoryDTO entity, int id)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task<bool> DeleteAsync(int id)
+		{
+			throw new NotImplementedException();
+		}
+	}
 
 		public async Task<CategoryDTO> GetAsync(int categoryId)
 		{

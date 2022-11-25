@@ -13,8 +13,8 @@ namespace RecantosSystem.Api.Models
         [Required]
 		[MaxLength(40)]
 		public string Email { get; set; }
-		public virtual User User { get; set; }
+		public virtual WorkGroup WorkGroup { get; set; }
 		[Required]
-		public int UserId { get; set; }
+		public int WorkGroupId { get; set; }
 	}
 }

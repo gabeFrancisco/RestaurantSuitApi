@@ -11,8 +11,8 @@ namespace RecantosSystem.Api.Models
 		{
 			get => Quantity * Product.Price;
 		}
-		public virtual User User { get; set; }
+		public virtual WorkGroup WorkGroup { get; set; }
 		[Required]
-		public int UserId { get; set; }
+		public int WorkGroupId { get; set; }
 	}
 }

@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using RecantosSystem.Api.Context;
 using RecantosSystem.Api.DTOs;
@@ -19,16 +20,20 @@ namespace RecantosSystem.Api.Services
 		private readonly TokenService _tokenService;
 		private readonly IMapper _mapper;
 		private LogService _logService;
+		private readonly IHttpContextAccessor _accessor;
+		public int UserId => throw new NotImplementedException();
 
 		public UserService(AppDbContext context,
 						   TokenService tokenService,
 						   IMapper mapper,
-						   LogService logService) 
+						   LogService logService,
+						   IHttpContextAccessor accessor)
 		{
 			_context = context;
 			_tokenService = tokenService;
 			_mapper = mapper;
 			_logService = logService;
+			_accessor = accessor;
 		}
 		public async Task<dynamic> RegisterUser(UserDTO userDto)
 		{
@@ -85,6 +90,13 @@ namespace RecantosSystem.Api.Services
 				Token = _tokenService.GenerateJwTToken(user.Username, user.Id, user.Role.ToString()),
 				Message = $"The user {user.Username} was logged succesfully!"
 			};
+		}
+
+		public async Task<dynamic> GetUser(int userId)
+		{
+			return await _context.Users
+				.Where(user => user.Id == userId)
+				.FirstOrDefaultAsync();
 		}
 	}
 }

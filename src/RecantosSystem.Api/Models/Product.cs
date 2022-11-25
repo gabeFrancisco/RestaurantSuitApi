@@ -16,8 +16,8 @@ namespace RecantosSystem.Api.Models
 		[Column(TypeName = "decimal(8,2)")]
 		[Required]
 		public decimal Price { get; set; }
-		public virtual User User { get; set; }
+		public virtual WorkGroup WorkGroup { get; set; }
 		[Required]
-		public int UserId { get; set; }
+		public int WorkGroupId { get; set; }
 	}
 }
