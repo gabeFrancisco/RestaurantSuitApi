@@ -39,12 +39,12 @@ namespace RecantosSystem.Api.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("WorkGroupId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("WorkGroupId");
 
                     b.ToTable("Categories");
                 });
@@ -76,12 +76,12 @@ namespace RecantosSystem.Api.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("WorkGroupId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("WorkGroupId");
 
                     b.ToTable("Customers");
                 });
@@ -104,7 +104,7 @@ namespace RecantosSystem.Api.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("WorkGroupId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -113,7 +113,7 @@ namespace RecantosSystem.Api.Migrations
 
                     b.HasIndex("TableId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("WorkGroupId");
 
                     b.ToTable("OrderSheets");
                 });
@@ -144,14 +144,14 @@ namespace RecantosSystem.Api.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("WorkGroupId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("WorkGroupId");
 
                     b.ToTable("Products");
                 });
@@ -177,7 +177,7 @@ namespace RecantosSystem.Api.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("WorkGroupId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -186,7 +186,7 @@ namespace RecantosSystem.Api.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("WorkGroupId");
 
                     b.ToTable("ProductOrders");
                 });
@@ -209,12 +209,12 @@ namespace RecantosSystem.Api.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("WorkGroupId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("WorkGroupId");
 
                     b.ToTable("Tables");
                 });
@@ -262,26 +262,82 @@ namespace RecantosSystem.Api.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("RecantosSystem.Api.Models.UserWorkGroup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WorkGroupId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.HasIndex("WorkGroupId");
+
+                    b.ToTable("UserWorkGroups");
+                });
+
+            modelBuilder.Entity("RecantosSystem.Api.Models.WorkGroup", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<int>("AdministratorId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("CreatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("longtext");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime(6)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AdministratorId");
+
+                    b.ToTable("WorkGroups");
+                });
+
             modelBuilder.Entity("RecantosSystem.Api.Models.Category", b =>
                 {
-                    b.HasOne("RecantosSystem.Api.Models.User", "User")
+                    b.HasOne("RecantosSystem.Api.Models.WorkGroup", "WorkGroup")
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("WorkGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("WorkGroup");
                 });
 
             modelBuilder.Entity("RecantosSystem.Api.Models.Customer", b =>
                 {
-                    b.HasOne("RecantosSystem.Api.Models.User", "User")
+                    b.HasOne("RecantosSystem.Api.Models.WorkGroup", "WorkGroup")
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("WorkGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("WorkGroup");
                 });
 
             modelBuilder.Entity("RecantosSystem.Api.Models.OrderSheet", b =>
@@ -298,9 +354,9 @@ namespace RecantosSystem.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RecantosSystem.Api.Models.User", "User")
+                    b.HasOne("RecantosSystem.Api.Models.WorkGroup", "WorkGroup")
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("WorkGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -308,7 +364,7 @@ namespace RecantosSystem.Api.Migrations
 
                     b.Navigation("Table");
 
-                    b.Navigation("User");
+                    b.Navigation("WorkGroup");
                 });
 
             modelBuilder.Entity("RecantosSystem.Api.Models.Product", b =>
@@ -319,15 +375,15 @@ namespace RecantosSystem.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RecantosSystem.Api.Models.User", "User")
+                    b.HasOne("RecantosSystem.Api.Models.WorkGroup", "WorkGroup")
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("WorkGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Category");
 
-                    b.Navigation("User");
+                    b.Navigation("WorkGroup");
                 });
 
             modelBuilder.Entity("RecantosSystem.Api.Models.ProductOrder", b =>
@@ -342,31 +398,66 @@ namespace RecantosSystem.Api.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RecantosSystem.Api.Models.User", "User")
+                    b.HasOne("RecantosSystem.Api.Models.WorkGroup", "WorkGroup")
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("WorkGroupId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Product");
 
-                    b.Navigation("User");
+                    b.Navigation("WorkGroup");
                 });
 
             modelBuilder.Entity("RecantosSystem.Api.Models.Table", b =>
                 {
-                    b.HasOne("RecantosSystem.Api.Models.User", "User")
+                    b.HasOne("RecantosSystem.Api.Models.WorkGroup", "WorkGroup")
                         .WithMany()
+                        .HasForeignKey("WorkGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("WorkGroup");
+                });
+
+            modelBuilder.Entity("RecantosSystem.Api.Models.UserWorkGroup", b =>
+                {
+                    b.HasOne("RecantosSystem.Api.Models.User", "User")
+                        .WithMany("UserWorkGroups")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("RecantosSystem.Api.Models.WorkGroup", "WorkGroup")
+                        .WithMany()
+                        .HasForeignKey("WorkGroupId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("User");
+
+                    b.Navigation("WorkGroup");
+                });
+
+            modelBuilder.Entity("RecantosSystem.Api.Models.WorkGroup", b =>
+                {
+                    b.HasOne("RecantosSystem.Api.Models.User", "Administrator")
+                        .WithMany()
+                        .HasForeignKey("AdministratorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Administrator");
                 });
 
             modelBuilder.Entity("RecantosSystem.Api.Models.OrderSheet", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("RecantosSystem.Api.Models.User", b =>
+                {
+                    b.Navigation("UserWorkGroups");
                 });
 #pragma warning restore 612, 618
         }

@@ -17,5 +17,6 @@ namespace RecantosSystem.Api.DTOs
 		public string Name { get; set; }
 		[Required]
 		public string Surname { get; set; }
+		public string Role { get; set; }
 	}
 }

@@ -11,6 +11,5 @@ namespace RecantosSystem.Api.Models
         public virtual User Administrator { get; set; }
         [Required]
         public int AdministratorId { get; set; }
-        public IEnumerable<User> Workers { get; set; }
     }
 }

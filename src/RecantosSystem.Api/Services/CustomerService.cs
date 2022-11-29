@@ -15,27 +15,28 @@ namespace RecantosSystem.Api.Services
 	{
 		private readonly AppDbContext _context;
 		private readonly IMapper _mapper;
-		private readonly IUserAccessor _userAccessor;
-		public CustomerService(AppDbContext context, IMapper mapper, IUserAccessor userAccessor)
+		private readonly IUserService _userService;
+		public CustomerService(AppDbContext context, IMapper mapper, IUserService userService)
 		{
 			_context = context;
 			_mapper = mapper;
-			_userAccessor = userAccessor;
+			_userService = userService;
 		}
-		public int UserId => _userAccessor.UserId;
+		private int WorkGroupId => _userService.SelectedWorkGroup;
+		public User User => _userService.GetUser();
 		private async Task<Customer> GetSingleCustomerAsync(int customerId)
 		{
 			return await _context.Customers
 				.FirstOrDefaultAsync(
 					customer => customer.Id == customerId
-					&& customer.UserId == this.UserId
+					&& customer.WorkGroupId == this.WorkGroupId
 				);
 		}
 
 		public async Task<IEnumerable<CustomerDTO>> GetAllAsync()
 		{
 			var customers = await _context.Customers
-				.Where(customer => customer.UserId == this.UserId)
+				.Where(customer => customer.WorkGroupId == this.WorkGroupId)
 				.ToListAsync();
 
 			return _mapper.Map<List<CustomerDTO>>(customers);
@@ -55,7 +56,7 @@ namespace RecantosSystem.Api.Services
 			}
 
 			var customer = _mapper.Map<CustomerDTO, Customer>(customerDto);
-			customer.UserId = this.UserId;
+			customer.WorkGroupId = this.WorkGroupId;
 			customer.CreatedAt = DateTime.UtcNow;
 
 			_context.Customers.Add(customer);
@@ -70,7 +71,7 @@ namespace RecantosSystem.Api.Services
 
 			updateCustomer.UpdatedAt = DateTime.UtcNow;
 			updateCustomer.CreatedAt = customer.CreatedAt;
-			updateCustomer.UserId = customer.UserId;
+			updateCustomer.WorkGroupId = customer.WorkGroupId;
 
 			_context.Entry(customer).CurrentValues.SetValues(updateCustomer);
 			await _context.SaveChangesAsync();

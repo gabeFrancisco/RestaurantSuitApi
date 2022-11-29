@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -21,7 +23,6 @@ namespace RecantosSystem.Api.Services
 		private readonly IMapper _mapper;
 		private LogService _logService;
 		private readonly IHttpContextAccessor _accessor;
-		public int UserId => throw new NotImplementedException();
 
 		public UserService(AppDbContext context,
 						   TokenService tokenService,
@@ -35,6 +36,32 @@ namespace RecantosSystem.Api.Services
 			_logService = logService;
 			_accessor = accessor;
 		}
+
+		public int SelectedWorkGroup => Int32.Parse(_accessor
+			.HttpContext
+			.Request
+			.Headers
+			.FirstOrDefault(x => x.Key == "X-WorkGroupId").Value);
+
+		public User GetUser()
+		{
+			return _context.Users
+				.Where(user => user.Id == Int32.Parse(_accessor
+					.HttpContext
+					.User
+					.Claims
+					.FirstOrDefault(i => i.Type == ClaimTypes.NameIdentifier)
+					.Value))
+				.FirstOrDefault();
+		}
+
+		public async Task<User> ReadUser(int id)
+		{
+			return await _context.Users
+				.Where(user => user.Id == id)
+				.FirstOrDefaultAsync();
+		}
+
 		public async Task<dynamic> RegisterUser(UserDTO userDto)
 		{
 			if (userDto == null)
@@ -90,13 +117,6 @@ namespace RecantosSystem.Api.Services
 				Token = _tokenService.GenerateJwTToken(user.Username, user.Id, user.Role.ToString()),
 				Message = $"The user {user.Username} was logged succesfully!"
 			};
-		}
-
-		public async Task<dynamic> GetUser(int userId)
-		{
-			return await _context.Users
-				.Where(user => user.Id == userId)
-				.FirstOrDefaultAsync();
 		}
 	}
 }

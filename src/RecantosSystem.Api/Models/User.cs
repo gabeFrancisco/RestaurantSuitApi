@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using RecantosSystem.Api.Models.Enums;
 
@@ -19,7 +20,6 @@ namespace RecantosSystem.Api.Models
 		[Required]
 		public string Password { get; set; }
 		public Role Role { get; set; }
-		public virtual WorkGroup WorkGroup { get; set; }
-		public int WorkGroupId { get; set; }
+		public IEnumerable<UserWorkGroup> UserWorkGroups { get; set; }
 	}
 }

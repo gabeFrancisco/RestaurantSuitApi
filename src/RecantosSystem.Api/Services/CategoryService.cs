@@ -18,19 +18,18 @@ namespace RecantosSystem.Api.Services
 	{
 		private readonly AppDbContext _context;
 		private readonly IMapper _mapper;
-		private IUserAccessor _userAccessor;
+		private IUserService _userService;
 		public CategoryService(AppDbContext context,
 							   IMapper mapper,
-							   IUserAccessor userAccessor)
+							   IUserService userService)
 		{
 			_context = context;
 			_mapper = mapper;
-			_userAccessor = userAccessor;
+			_userService = userService;
 		}
 
-		public int UserId => 
-
-		public User User => throw new NotImplementedException();
+		public User User => _userService.GetUser();
+		private int WorkGroupId => _userService.SelectedWorkGroup;
 
 		/// <summary>
 		/// Returns all the categories from the database
@@ -39,7 +38,7 @@ namespace RecantosSystem.Api.Services
 		public async Task<IEnumerable<CategoryDTO>> GetAllAsync()
 		{
 			var categories = await _context.Categories
-				.Where(cat => cat.WorkGroupId == this.UserId)
+				.Where(cat => cat.WorkGroupId == this.WorkGroupId)
 				.ToListAsync();
 
 			return _mapper.Map<List<CategoryDTO>>(categories);
@@ -58,7 +57,7 @@ namespace RecantosSystem.Api.Services
 			}
 
 			var category = _mapper.Map<CategoryDTO, Category>(categoryDTO);
-			category.UserId = this.UserId;
+			category.WorkGroupId = this.User.Id;
 			category.CreatedAt = DateTime.UtcNow;
 
 			_context.Categories.Add(category);
@@ -67,29 +66,15 @@ namespace RecantosSystem.Api.Services
 			return categoryDTO;
 		}
 
-		private async Task<Category> GetSin'gleCategoryAsync(int categoryId)
+		private async Task<Category> GetSingleCategoryAsync(int categoryId)
 		{
 			return await _context.Categories
 				.FirstOrDefaultAsync(cat =>
 					cat.Id == categoryId
-					&& cat.UserId == this.UserId
+					&& cat.WorkGroupId == this.WorkGroupId
 			);
 
-		public Task<CategoryDTO> GetAsync(int id)
-		{
-			throw new NotImplementedException();
 		}
-
-		public Task<CategoryDTO> UpdateAsync(CategoryDTO entity, int id)
-		{
-			throw new NotImplementedException();
-		}
-
-		public Task<bool> DeleteAsync(int id)
-		{
-			throw new NotImplementedException();
-		}
-	}
 
 		public async Task<CategoryDTO> GetAsync(int categoryId)
 		{
@@ -103,7 +88,7 @@ namespace RecantosSystem.Api.Services
 
 			updatedCategory.UpdatedAt = DateTime.UtcNow;
 			updatedCategory.CreatedAt = category.CreatedAt;
-			updatedCategory.UserId = category.UserId;
+			updatedCategory.WorkGroupId = category.WorkGroupId;
 
 			_context.Entry(category).CurrentValues.SetValues(updatedCategory);
 			await _context.SaveChangesAsync();

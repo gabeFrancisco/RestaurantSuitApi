@@ -66,6 +66,7 @@ namespace RecantosSystem.Api
 			services.AddScoped<ICategoryService, CategoryService>();
 			services.AddScoped<ICustomerService, CustomerService>();
 			services.AddScoped<ITableService, TableService>();
+			services.AddScoped<IWorkGroupService, WorkGroupService>();
 
 			// Bellow is the Jwt Bearer config.
 			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -83,11 +84,16 @@ namespace RecantosSystem.Api
 						)
 					});
 
-			services.AddControllers(options => 
+			services.AddControllers(options =>
 				{
 					options.Filters.Add<ExceptionsAttribute>();
 				}
 			);
+
+			// services.AddHttpClient("WorkGroup", c =>
+			// {
+			// 	c.DefaultRequestHeaders.Add("X-Custom-Env", "0");
+			// });
 
 			// Swagger config
 			services.AddSwaggerGen(c =>

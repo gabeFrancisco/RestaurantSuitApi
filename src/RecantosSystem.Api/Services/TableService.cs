@@ -14,22 +14,24 @@ namespace RecantosSystem.Api.Services
 	public class TableService : ITableService
 	{
 		private readonly AppDbContext _context;
-		private readonly IUserAccessor _userAccessor;
+		private readonly IUserService _userService;
 		private readonly IMapper _mapper;
 		public TableService(AppDbContext context,
-							IUserAccessor userAccessor,
+							IUserService userService,
 							IMapper mapper)
 		{
 			_context = context;
-			_userAccessor = userAccessor;
+			_userService = userService;
 			_mapper = mapper;
 		}
 
-		public int UserId => _userAccessor.UserId;
+		public User User => _userService.GetUser();
+		private int WorkGroupId => _userService.SelectedWorkGroup;
+
 		public async Task<IEnumerable<TableDTO>> GetAllAsync()
 		{
 			var tables = await _context.Tables
-				.Where(table => table.UserId == this.UserId)
+				.Where(table => table.WorkGroupId == this.WorkGroupId)
 				.ToListAsync();
 
 			return _mapper.Map<List<TableDTO>>(tables);
@@ -40,7 +42,7 @@ namespace RecantosSystem.Api.Services
 			return await _context.Tables
 				.FirstOrDefaultAsync(
 					table => table.Id == tableId
-					&& table.UserId == this.UserId
+					&& table.WorkGroupId == this.WorkGroupId
 				);
 		}
 
@@ -54,42 +56,42 @@ namespace RecantosSystem.Api.Services
 		{
 			if (tableDto == null)
 			{
-                throw new NullReferenceException("Table data transfer is null");
+				throw new NullReferenceException("Table data transfer is null");
 			}
 
-            var table = _mapper.Map<TableDTO, Table>(tableDto);
-            table.UserId = this.UserId;
-            table.CreatedAt = DateTime.UtcNow;
+			var table = _mapper.Map<TableDTO, Table>(tableDto);
+			table.WorkGroupId = this.WorkGroupId;
+			table.CreatedAt = DateTime.UtcNow;
 
-            _context.Tables.Add(table);
-            await _context.SaveChangesAsync();
+			_context.Tables.Add(table);
+			await _context.SaveChangesAsync();
 
-            return tableDto;
+			return tableDto;
 		}
 
 		public async Task<TableDTO> UpdateAsync(TableDTO tableDto, int id)
 		{
 			var table = await this.GetSingleTableAsync(id);
-            var updatedTable = _mapper.Map<TableDTO, Table>(tableDto);
+			var updatedTable = _mapper.Map<TableDTO, Table>(tableDto);
 
-            updatedTable.UpdatedAt = DateTime.UtcNow;
-            updatedTable.CreatedAt = table.CreatedAt;
-            updatedTable.UserId = this.UserId;
+			updatedTable.UpdatedAt = DateTime.UtcNow;
+			updatedTable.CreatedAt = table.CreatedAt;
+			updatedTable.WorkGroupId = this.WorkGroupId;
 
-            _context.Entry(table).CurrentValues.SetValues(updatedTable);
-            await _context.SaveChangesAsync();
+			_context.Entry(table).CurrentValues.SetValues(updatedTable);
+			await _context.SaveChangesAsync();
 
-            return  _mapper.Map<Table, TableDTO>(updatedTable);
+			return _mapper.Map<Table, TableDTO>(updatedTable);
 		}
 
 		public async Task<bool> DeleteAsync(int id)
 		{
 			var table = await this.GetSingleTableAsync(id);
 
-            _context.Tables.Remove(table);
-            await _context.SaveChangesAsync();
+			_context.Tables.Remove(table);
+			await _context.SaveChangesAsync();
 
-            return true;
+			return true;
 		}
 	}
 }
