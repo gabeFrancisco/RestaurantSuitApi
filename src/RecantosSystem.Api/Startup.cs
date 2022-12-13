@@ -27,129 +27,130 @@ using RecantosSystem.Api.Services.Security;
 
 namespace RecantosSystem.Api
 {
-	public class Startup
-	{
-		public Startup(IConfiguration configuration)
-		{
-			Configuration = configuration;
-		}
+    public class Startup
+    {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
 
-		public IConfiguration Configuration { get; }
+        public IConfiguration Configuration { get; }
 
-		// This method gets called by the runtime. Use this method to add services to the container.
-		public void ConfigureServices(IServiceCollection services)
-		{
-			services.AddLogging();
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddLogging();
 
-			// AppDbContext setup
-			string mySqlConnection = Configuration.GetConnectionString("DefaultConnection");
-			services.AddDbContext<AppDbContext>(options =>
-				options.UseMySql(mySqlConnection, ServerVersion.AutoDetect(mySqlConnection)));
+            // AppDbContext setup
+            string mySqlConnection = Configuration.GetConnectionString("DefaultConnection");
+            services.AddDbContext<AppDbContext>(options =>
+                options.UseMySql(mySqlConnection, ServerVersion.AutoDetect(mySqlConnection)));
 
-			// AutoMapper config
-			var mappingConfig = new MapperConfiguration(mc =>
-			{
-				mc.AddProfile(new MappingProfile());
-			});
+            // AutoMapper config
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
 
-			IMapper mapper = mappingConfig.CreateMapper();
+            IMapper mapper = mappingConfig.CreateMapper();
 
-			// Dependency injection 
-			services.AddHttpContextAccessor();
-			services.AddSingleton(mapper);
-			services.AddSingleton<IUserAccessor, HttpUserAccessor>();
-			services.AddLogging();
+            // Dependency injection 
+            services.AddHttpContextAccessor();
+            services.AddSingleton(mapper);
+            services.AddSingleton<IUserAccessor, HttpUserAccessor>();
+            services.AddLogging();
 
-			services.AddScoped<LogService>();
-			services.AddScoped<IUserService, UserService>();
-			services.AddScoped<TokenService>();
-			services.AddScoped<ICategoryService, CategoryService>();
-			services.AddScoped<ICustomerService, CustomerService>();
-			services.AddScoped<ITableService, TableService>();
-			services.AddScoped<IWorkGroupService, WorkGroupService>();
+            services.AddScoped<LogService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<TokenService>();
+            services.AddScoped<ICategoryService, CategoryService>();
+            services.AddScoped<ICustomerService, CustomerService>();
+            services.AddScoped<ITableService, TableService>();
+            services.AddScoped<IWorkGroupService, WorkGroupService>();
 
-			// Bellow is the Jwt Bearer config.
-			services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-				.AddJwtBearer(options =>
-					options.TokenValidationParameters = new TokenValidationParameters
-					{
-						ValidateIssuer = true,
-						ValidateAudience = true,
-						ValidateLifetime = true,
-						ValidAudience = Configuration["TokenConfiguration:Audience"],
-						ValidIssuer = Configuration["TokenConfiguration:Issuer"],
-						ValidateIssuerSigningKey = true,
-						IssuerSigningKey = new SymmetricSecurityKey(
-							Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])
-						)
-					});
+            // Bellow is the Jwt Bearer config.
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidAudience = Configuration["TokenConfiguration:Audience"],
+                        ValidIssuer = Configuration["TokenConfiguration:Issuer"],
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(Configuration["Jwt:Key"])
+                        )
+                    });
 
-			services.AddControllers(options =>
-				{
-					options.Filters.Add<ExceptionsAttribute>();
-				}
-			);
+            services.AddControllers(options =>
+                {
+                    options.Filters.Add<ExceptionsAttribute>();
+                }
+            );
 
-			// services.AddHttpClient("WorkGroup", c =>
-			// {
-			// 	c.DefaultRequestHeaders.Add("X-Custom-Env", "0");
-			// });
+            // Swagger config
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "RecantosSystem.Api", Version = "v1" });
 
-			// Swagger config
-			services.AddSwaggerGen(c =>
-			{
-				c.SwaggerDoc("v1", new OpenApiInfo { Title = "RecantosSystem.Api", Version = "v1" });
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
 
-				var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-				var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
 
-				c.IncludeXmlComments(xmlPath);
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "JWT Authorization header using the Bearer scheme"
+                });
 
-				c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
-				{
-					Name = "Authorization",
-					Type = SecuritySchemeType.ApiKey,
-					Scheme = "Bearer",
-					BearerFormat = "JWT",
-					In = ParameterLocation.Header,
-					Description = "JWT Authorization header using the Bearer scheme"
-				});
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement(){
+                    {
+                        new OpenApiSecurityScheme{
+                            Reference = new OpenApiReference{
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] {}
+                    }
+                });
+            });
+        }
 
-				c.AddSecurityRequirement(new OpenApiSecurityRequirement(){
-					{
-						new OpenApiSecurityScheme{
-							Reference = new OpenApiReference{
-								Type = ReferenceType.SecurityScheme,
-								Id = "Bearer"
-							}
-						},
-						new string[] {}
-					}
-				});
-			});
-		}
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RecantosSystem.Api v1"));
+            }
 
-		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-		{
-			if (env.IsDevelopment())
-			{
-				app.UseDeveloperExceptionPage();
-				app.UseSwagger();
-				app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RecantosSystem.Api v1"));
-			}
+            app.Use(async (ctx, next) =>
+            {
+                ctx.Response.Headers.Add("x-wg-id", "*");
+                await next();
+            });
 
-			app.UseHttpsRedirection();
+            app.UseHttpsRedirection();
 
-			app.UseRouting();
+            app.UseRouting();
 
-			app.UseAuthentication();
-			app.UseAuthorization();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
-			app.UseEndpoints(endpoints =>
-			{
-				endpoints.MapControllers();
-			});
-		}
-	}
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
+        }
+    }
 }

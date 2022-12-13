@@ -6,8 +6,9 @@ namespace RecantosSystem.Api.Interfaces
 {
 	public interface IUserService
 	{
-		User GetUser();
-		int SelectedWorkGroup { get; }
+		Task<User> GetUser();
+		int UserId { get; }
+        int SelectedWorkGroup { get; }
 		Task<dynamic> RegisterUser(UserDTO userDto);
 		Task<dynamic> Login(LoginDTO loginDto);
 		Task<User> ReadUser(int id);

@@ -25,7 +25,6 @@ namespace RecantosSystem.Api.Services
 			_mapper = mapper;
 		}
 
-		public User User => _userService.GetUser();
 		private int WorkGroupId => _userService.SelectedWorkGroup;
 
 		public async Task<IEnumerable<TableDTO>> GetAllAsync()

@@ -9,8 +9,8 @@ using RecantosSystem.Api.Context;
 namespace RecantosSystem.Api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20221128235524_WorkGroups")]
-    partial class WorkGroups
+    [Migration("20221212234334_LastUserWorkGroup")]
+    partial class LastUserWorkGroup
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -233,6 +233,9 @@ namespace RecantosSystem.Api.Migrations
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<int>("LastUserWorkGroup")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()

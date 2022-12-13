@@ -21,5 +21,6 @@ namespace RecantosSystem.Api.Models
 		public string Password { get; set; }
 		public Role Role { get; set; }
 		public IEnumerable<UserWorkGroup> UserWorkGroups { get; set; }
+		public int LastUserWorkGroup { get; set; }
 	}
-}
+}  

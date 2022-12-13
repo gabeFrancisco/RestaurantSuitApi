@@ -43,17 +43,17 @@ namespace RecantosSystem.Api.Services
 			.Headers
 			.FirstOrDefault(x => x.Key == "X-WorkGroupId").Value);
 
-		public User GetUser()
+        public int UserId => Int32.Parse(_accessor
+                    .HttpContext
+                    .User
+                    .Claims
+                    .FirstOrDefault(i => i.Type == ClaimTypes.NameIdentifier)
+                    .Value);
+
+        public async Task<User> GetUser()
 		{
-			return _context.Users
-				.Where(user => user.Id == Int32.Parse(_accessor
-					.HttpContext
-					.User
-					.Claims
-					.FirstOrDefault(i => i.Type == ClaimTypes.NameIdentifier)
-					.Value))
-				.FirstOrDefault();
-		}
+            return await this.ReadUser(this.UserId);
+        }
 
 		public async Task<User> ReadUser(int id)
 		{

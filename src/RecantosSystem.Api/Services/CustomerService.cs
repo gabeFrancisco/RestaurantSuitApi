@@ -23,7 +23,6 @@ namespace RecantosSystem.Api.Services
 			_userService = userService;
 		}
 		private int WorkGroupId => _userService.SelectedWorkGroup;
-		public User User => _userService.GetUser();
 		private async Task<Customer> GetSingleCustomerAsync(int customerId)
 		{
 			return await _context.Customers

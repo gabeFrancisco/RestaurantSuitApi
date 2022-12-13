@@ -28,7 +28,6 @@ namespace RecantosSystem.Api.Services
 			_userService = userService;
 		}
 
-		public User User => _userService.GetUser();
 		private int WorkGroupId => _userService.SelectedWorkGroup;
 
 		/// <summary>
@@ -51,13 +50,14 @@ namespace RecantosSystem.Api.Services
 		/// <returns></returns>
 		public async Task<CategoryDTO> AddAsync(CategoryDTO categoryDTO)
 		{
-			if (categoryDTO == null)
+            var actualUser = await _userService.GetUser();
+            if (categoryDTO == null)
 			{
 				throw new NullReferenceException("Data transfer object is null!");
 			}
 
 			var category = _mapper.Map<CategoryDTO, Category>(categoryDTO);
-			category.WorkGroupId = this.User.Id;
+			category.WorkGroupId = actualUser.Id;
 			category.CreatedAt = DateTime.UtcNow;
 
 			_context.Categories.Add(category);
@@ -73,7 +73,6 @@ namespace RecantosSystem.Api.Services
 					cat.Id == categoryId
 					&& cat.WorkGroupId == this.WorkGroupId
 			);
-
 		}
 
 		public async Task<CategoryDTO> GetAsync(int categoryId)

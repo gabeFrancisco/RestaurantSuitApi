@@ -232,6 +232,9 @@ namespace RecantosSystem.Api.Migrations
                         .IsRequired()
                         .HasColumnType("longtext");
 
+                    b.Property<int>("LastUserWorkGroup")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(30)

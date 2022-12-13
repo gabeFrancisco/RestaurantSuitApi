@@ -30,28 +30,28 @@ namespace RecantosSystem.Api.Services
 			_accessor = accessor;
 		}
 
-		public User User => _userService.GetUser();
-
 		public async Task<WorkGroupDTO> AddAsync(WorkGroupDTO entity)
 		{
-			//Checks if the entity is null
-			if (entity == null)
+            var actualUser = await _userService.GetUser();
+            //Checks if the entity is null
+            if (entity == null)
 			{
 				throw new NullReferenceException("Data transfer object cannot be null!");
+
 			}
 
 			var workGroup = _mapper.Map<WorkGroupDTO, WorkGroup>(entity);
 
-			//Checks if the actual User is an administrator
+			//Checks if the actual actualUser is an administrator
 			//If not, it will throw an excepion
-			if (this.User.Role == Role.WORKER)
+			if (actualUser.Role == Role.WORKER)
 			{
 				throw new UnauthorizedAccessException(
 					"You cannot add this WorkGroup because the user is of the Role.WORKER type!"
 					);
 			}
 
-			workGroup.Administrator = this.User;
+			workGroup.Administrator = actualUser;
 			var workersIds = entity.Workers;
 
 			if (!workersIds.Any())
@@ -90,8 +90,10 @@ namespace RecantosSystem.Api.Services
 
 		public async Task<IEnumerable<WorkGroupDTO>> GetAllAsync()
 		{
-			var workGroups = await _context.UserWorkGroups
-				.Where(uwg => uwg.UserId == this.User.Id)
+            var actualUser = await _userService.GetUser();
+			
+            var workGroups = await _context.UserWorkGroups
+				.Where(uwg => uwg.UserId == actualUser.Id)
 				.Include(uwg => uwg.WorkGroup)
 				.Select(uwg => uwg.WorkGroup)
 				.ToListAsync();
@@ -116,7 +118,7 @@ namespace RecantosSystem.Api.Services
 		{
 			throw new System.NotImplementedException();
 		}
-
+  
 		public async Task<WorkGroupDTO> SelectWorkGroup(int id)
 		{
 			var workGroup = await this.GetSingleWorkGroupAsync(id);
@@ -125,7 +127,7 @@ namespace RecantosSystem.Api.Services
 				throw new NullReferenceException("The Work Group does not exist!");
 			}
 
-			_accessor.HttpContext.Request.Headers.Add("X-WorkGroupId", id.ToString());
+			_accessor.HttpContext.Request.Headers.Add("x-wg-id", id.ToString());
 			return _mapper.Map<WorkGroup, WorkGroupDTO>(workGroup);
 		}
 	}
