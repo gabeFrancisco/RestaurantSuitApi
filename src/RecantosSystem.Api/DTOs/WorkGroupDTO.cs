@@ -8,6 +8,6 @@ namespace RecantosSystem.Api.DTOs
 		[Required]
 		public string Title { get; set; }
 		public string Description { get; set; }
-		public IEnumerable<int> Workers { get; set; }
+		public List<int> Workers { get; set; }
 	}
 }

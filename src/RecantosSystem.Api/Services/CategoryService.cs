@@ -28,7 +28,7 @@ namespace RecantosSystem.Api.Services
 			_userService = userService;
 		}
 
-		private int WorkGroupId => _userService.SelectedWorkGroup;
+		private int WorkGroupId => _userService .SelectedWorkGroup;
 
 		/// <summary>
 		/// Returns all the categories from the database

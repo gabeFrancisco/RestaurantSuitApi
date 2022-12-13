@@ -53,8 +53,9 @@ namespace RecantosSystem.Api.Services
 
 			workGroup.Administrator = actualUser;
 			var workersIds = entity.Workers;
+            workersIds.Add(actualUser.Id);
 
-			if (!workersIds.Any())
+            if (workersIds.Any())
 			{
 				//Go through each given and creates a new UserWorkGroup object
 				//to be added to the database
@@ -91,7 +92,7 @@ namespace RecantosSystem.Api.Services
 		public async Task<IEnumerable<WorkGroupDTO>> GetAllAsync()
 		{
             var actualUser = await _userService.GetUser();
-			
+
             var workGroups = await _context.UserWorkGroups
 				.Where(uwg => uwg.UserId == actualUser.Id)
 				.Include(uwg => uwg.WorkGroup)
