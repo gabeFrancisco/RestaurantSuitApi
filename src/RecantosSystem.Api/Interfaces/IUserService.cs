@@ -4,13 +4,14 @@ using RecantosSystem.Api.Models;
 
 namespace RecantosSystem.Api.Interfaces
 {
-	public interface IUserService
+	public interface IUserService : IBaseService<UserDTO>
 	{
-		Task<User> GetUser();
+		Task<User> GetActualUser();
 		int UserId { get; }
         int SelectedWorkGroup { get; }
 		Task<dynamic> RegisterUser(UserDTO userDto);
 		Task<dynamic> Login(LoginDTO loginDto);
-		Task<User> ReadUser(int id);
-	}
+        Task<User> GetSingleUserAsync(int id);
+        Task<bool> UpdateUserLastWorkGroupId(int workGroupId);
+    }
 }

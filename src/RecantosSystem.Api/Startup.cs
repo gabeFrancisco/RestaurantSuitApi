@@ -87,6 +87,7 @@ namespace RecantosSystem.Api
             services.AddControllers(options =>
                 {
                     options.Filters.Add<ExceptionsAttribute>();
+                    options.Filters.Add<WorkGroupHeaderAttribute>();
                 }
             );
 
@@ -136,7 +137,7 @@ namespace RecantosSystem.Api
 
             app.Use(async (ctx, next) =>
             {
-                ctx.Response.Headers.Add("x-wg-id", "*");
+                ctx.Response.Headers.Add("x-workGroup-id", "*");
                 await next();
             });
 
