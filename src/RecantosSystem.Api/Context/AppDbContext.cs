@@ -16,5 +16,6 @@ namespace RecantosSystem.Api.Context
         public DbSet<User> Users { get; set; }
         public DbSet<WorkGroup> WorkGroups { get; set; }
         public DbSet<UserWorkGroup> UserWorkGroups { get; set; }
+        public DbSet<Event> Events { get; set; }
 	}
 }

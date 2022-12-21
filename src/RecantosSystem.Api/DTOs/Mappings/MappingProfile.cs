@@ -12,6 +12,7 @@ namespace RecantosSystem.Api.DTOs.Mappings
             CreateMap<Customer, CustomerDTO>().ReverseMap();
             CreateMap<Table, TableDTO>().ReverseMap();
             CreateMap<WorkGroup, WorkGroupDTO>().ReverseMap();
+            CreateMap<Event, EventDTO>().ReverseMap();
         }
     }
 }
