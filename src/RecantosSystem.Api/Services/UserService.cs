@@ -49,14 +49,21 @@ namespace RecantosSystem.Api.Services
 
         public async Task<User> GetActualUser()
         {
-            return await this.GetSingleUserAsync(this.UserId);
+            try
+            {
+                return await this.GetSingleUserAsync(this.UserId);
+            }
+            catch (NullReferenceException)
+            {
+                return null;
+            }
         }
 
         public async Task<User> GetSingleUserAsync(int id)
         {
             return await _context.Users
                 .Where(user => user.Id == id)
-                .FirstOrDefaultAsync();
+                .SingleOrDefaultAsync();
         }
 
         public async Task<dynamic> RegisterUser(UserDTO userDto)

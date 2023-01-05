@@ -13,7 +13,7 @@ namespace RecantosSystem.Api.Controllers
     [Route("api/[controller]")]
     [ApiConventionType(typeof(DefaultApiConventions))]
     [Authorize(AuthenticationSchemes = "Bearer")]
-    // [WorkGroupHeaderAttribute]
+    [WorkGroupHeaderAttribute]
     public class CategoriesController : ControllerBase
     {
         private readonly ICategoryService _categoryService;

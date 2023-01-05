@@ -8,6 +8,7 @@ namespace RecantosSystem.Api.DTOs
 {
     public class EventDTO
     {
+        public int Id { get; set; }
         [Required]
         [MaxLength(50)]
         public string Title { get; set; }

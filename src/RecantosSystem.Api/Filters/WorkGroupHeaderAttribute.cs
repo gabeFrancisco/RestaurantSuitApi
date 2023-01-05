@@ -9,20 +9,22 @@ using RecantosSystem.Api.Services;
 
 namespace RecantosSystem.Api.Filters
 {
-    public class WorkGroupHeaderAttribute : Attribute, IAsyncResultFilter
+    public class WorkGroupHeaderAttribute : Attribute, IAsyncActionFilter
     {
         private IUserService _userService;
-        public async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
+
+        public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             _userService = (IUserService)context.HttpContext.RequestServices.GetService(typeof(IUserService));
-            var user = await _userService.GetActualUser();
+            var user = await _userService.GetActualUser() ?? null;
 
             if (user == null)
             {
-                throw new UnauthorizedAccessException("Access denied!");
+                await next();
             }
 
             context.HttpContext.Response.Headers["x-workGroup-id"] = user.LastUserWorkGroup.ToString();
         }
+
     }
 }

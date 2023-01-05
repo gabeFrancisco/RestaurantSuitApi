@@ -1,0 +1,21 @@
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=mysql.restaurantsuitweb.kinghost.net;User=restaurantsuit;Password=rest38712;Database=restaurantsuit"
+  },
+  "Jwt": {
+    "Key": "jesusismysaviorandmygod"
+  },
+  "TokenConfiguration": {
+    "Audience": "Genesis_Audience",
+    "Issuer": "Genesis_Issuer",
+    "ExpireHours": 1
+  },
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "AllowedHosts": "*"
+}

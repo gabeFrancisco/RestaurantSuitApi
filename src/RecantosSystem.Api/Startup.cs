@@ -40,6 +40,7 @@ namespace RecantosSystem.Api
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddLogging();
+            services.AddCors();
 
             // AppDbContext setup
             string mySqlConnection = Configuration.GetConnectionString("DefaultConnection");
@@ -67,6 +68,7 @@ namespace RecantosSystem.Api
             services.AddScoped<ICustomerService, CustomerService>();
             services.AddScoped<ITableService, TableService>();
             services.AddScoped<IWorkGroupService, WorkGroupService>();
+            services.AddScoped<IEventService, EventService>();
 
             // Bellow is the Jwt Bearer config.
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -140,6 +142,8 @@ namespace RecantosSystem.Api
                 ctx.Response.Headers.Add("x-workGroup-id", "*");
                 await next();
             });
+
+            app.UseCors(option => option.AllowAnyOrigin());
 
             app.UseHttpsRedirection();
 
