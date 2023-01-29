@@ -137,11 +137,11 @@ namespace RecantosSystem.Api
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RecantosSystem.Api v1"));
             }
 
-            app.Use(async (ctx, next) =>
-            {
-                ctx.Response.Headers.Add("x-workGroup-id", "*");
-                await next();
-            });
+            // app.Use(async (ctx, next) =>
+            // {
+            //     ctx.Response.Headers.Add("x-workGroup-id", "*");
+            //     await next();
+            // });
 
             app.UseCors(option => option.AllowAnyOrigin());
 

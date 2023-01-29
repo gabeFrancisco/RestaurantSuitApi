@@ -36,7 +36,7 @@ namespace RecantosSystem.Api.Services
 
         public int SelectedWorkGroup => Int32.Parse(_accessor
             .HttpContext
-            .Request
+            .Response
             .Headers
             .FirstOrDefault(x => x.Key == "x-workGroup-id").Value);
 

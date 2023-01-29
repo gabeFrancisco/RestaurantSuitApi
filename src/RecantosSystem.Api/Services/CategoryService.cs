@@ -57,7 +57,7 @@ namespace RecantosSystem.Api.Services
             }
 
             var category = _mapper.Map<CategoryDTO, Category>(categoryDTO);
-            category.WorkGroupId = actualUser.Id;
+            category.WorkGroupId = this.WorkGroupId;
             category.CreatedAt = DateTime.UtcNow;
 
             _context.Categories.Add(category);
