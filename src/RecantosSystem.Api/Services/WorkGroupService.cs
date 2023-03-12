@@ -88,16 +88,19 @@ namespace RecantosSystem.Api.Services
             throw new System.NotImplementedException();
         }
 
-        public async Task<IEnumerable<WorkGroupDTO>> GetAllAsync()
+        private async Task<IEnumerable<WorkGroup>> GetAll()
         {
             var actualUser = await _userService.GetActualUser();
-
-            var workGroups = await _context.UserWorkGroups
+            return await _context.UserWorkGroups
                 .Where(uwg => uwg.UserId == actualUser.Id)
                 .Include(uwg => uwg.WorkGroup)
                 .Select(uwg => uwg.WorkGroup)
                 .ToListAsync();
+        }
 
+        public async Task<IEnumerable<WorkGroupDTO>> GetAllAsync()
+        {
+            var workGroups = await this.GetAll();
             return _mapper.Map<List<WorkGroupDTO>>(workGroups);
         }
 
@@ -126,9 +129,18 @@ namespace RecantosSystem.Api.Services
             {
                 throw new NullReferenceException("The Work Group does not exist!");
             }
+            var workGroups = await this.GetAll();
 
-            await _userService.UpdateUserLastWorkGroupId(workGroup.Id);
-            return _mapper.Map<WorkGroup, WorkGroupDTO>(workGroup);
+            if (workGroups.Any(x => x.Id == id))
+            {
+                await _userService.UpdateUserLastWorkGroupId(workGroup.Id);
+                return _mapper.Map<WorkGroup, WorkGroupDTO>(workGroup);
+            }
+            else
+            {
+                throw new InvalidOperationException("This workgroup ID does not belongs to the actual user!");
+            }
+
         }
     }
 }

@@ -22,7 +22,7 @@ namespace RecantosSystem.Api.Services
         public CategoryService(AppDbContext context,
                                IMapper mapper,
                                IUserService userService)
-        {
+        { 
             _context = context;
             _mapper = mapper;
             _userService = userService;

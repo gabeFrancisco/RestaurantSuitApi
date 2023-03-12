@@ -61,9 +61,12 @@ namespace RecantosSystem.Api.Services
 
         public async Task<User> GetSingleUserAsync(int id)
         {
-            return await _context.Users
+            var user = await _context.Users
                 .Where(user => user.Id == id)
                 .SingleOrDefaultAsync();
+
+            user.Password = "";
+            return user;
         }
 
         public async Task<dynamic> RegisterUser(UserDTO userDto)
@@ -73,8 +76,12 @@ namespace RecantosSystem.Api.Services
                 throw new NullReferenceException("User data cannot be null");
             }
 
+            if (_context.Users.Any(u => u.Username == userDto.Username))
+            {
+                throw new InvalidOperationException("This username is already in use! Try another!");
+            }
+            
             string passwordHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password);
-
             var user = _mapper.Map<UserDTO, User>(userDto);
             user.Password = passwordHash;
             user.CreatedAt = DateTime.UtcNow;
@@ -100,26 +107,36 @@ namespace RecantosSystem.Api.Services
 
             var user = await _context.Users
                 .Where(x => x.Username == loginDto.Username)
-                .FirstOrDefaultAsync();
+                .SingleOrDefaultAsync();
 
             if (user == null)
             {
-                return "Username is incorrect";
+                throw new InvalidOperationException("Username is incorrect!");
             }
 
             bool verified = BCrypt.Net.BCrypt.Verify(loginDto.Password, user.Password);
             if (!verified)
             {
-                return "Password is incorrect";
+                throw new InvalidOperationException("Password is incorrect");
             }
 
+            user.Password = "";
             _accessor.HttpContext.Response.Headers["x-workGroup-id"] = user.LastUserWorkGroup.ToString();
+
+            var cookiesOptions = new CookieOptions
+            {
+                HttpOnly = true,
+                SameSite = SameSiteMode.None,
+                Secure = true,
+                Expires = DateTime.UtcNow.AddDays(7)
+            };
 
             return new
             {
                 User = user,
                 Token = _tokenService.GenerateJwTToken(user.Username, user.Id, user.Role.ToString()),
-                Message = $"The user {user.Username} was logged succesfully!"
+                Message = $"The user {user.Username} was logged succesfully!",
+                Cookies = cookiesOptions
             };
         }
 
@@ -128,9 +145,10 @@ namespace RecantosSystem.Api.Services
             throw new NotImplementedException();
         }
 
-        public Task<UserDTO> GetAsync(int id)
+        public async Task<UserDTO> GetAsync(int id)
         {
-            throw new NotImplementedException();
+            var user = await this.GetSingleUserAsync(id);
+            return _mapper.Map<User, UserDTO>(user);
         }
 
         public Task<UserDTO> AddAsync(UserDTO entity)
