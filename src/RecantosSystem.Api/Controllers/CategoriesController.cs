@@ -61,5 +61,8 @@ namespace RecantosSystem.Api.Controllers
         {
             return Ok(await _categoryService.DeleteAsync(id));
         }
+
+        [HttpGet("productsCount/{id}")]
+        public async Task<IActionResult> CountProducts(int id) => Ok(await _categoryService.GetProductsCountByCategory(id));
     }
 }

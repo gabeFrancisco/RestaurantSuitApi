@@ -104,5 +104,12 @@ namespace RecantosSystem.Api.Services
 
             return true;
         }
+
+        public async Task<int> GetProductsCountByCategory(int categoryId)
+        {
+            return await _context.Products
+                .Where(product => product.CategoryId == categoryId)
+                .CountAsync();
+        }
     }
 }
