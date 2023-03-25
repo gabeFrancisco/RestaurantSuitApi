@@ -50,7 +50,7 @@ namespace RecantosSystem.Api.Services
         /// <returns></returns>
         public async Task<CategoryDTO> AddAsync(CategoryDTO categoryDTO)
         {
-            var actualUser = await _userService.GetActualUser();
+            // var actualUser = await _userService.GetActualUser();
             if (categoryDTO == null)
             {
                 throw new NullReferenceException("Data transfer object is null!");
