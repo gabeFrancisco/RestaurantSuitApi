@@ -12,7 +12,10 @@ namespace RecantosSystem.Api.DTOs.Mappings
             CreateMap<Customer, CustomerDTO>().ReverseMap();
             CreateMap<Table, TableDTO>().ReverseMap();
             CreateMap<WorkGroup, WorkGroupDTO>().ReverseMap();
-            CreateMap<Product, ProductDTO>().ReverseMap();
+           
+            CreateMap<Product, ProductDTO>()
+                // .ForMember(x => x.CategoryName, y => y.MapFrom(e => e.Category.Name))
+                .ReverseMap();
 
             CreateMap<Event, EventDTO>()
                 .ForMember(x => x.Date, y => y.MapFrom(e => e.EventDate.Date))

@@ -13,6 +13,7 @@ namespace RecantosSystem.Api.DTOs
         public string Name { get; set; }
         [Required]
         public int CategoryId { get; set; }
+        public string CategoryName { get; set; }
         [Required]
         public int Quantity { get; set; }
         [Required]

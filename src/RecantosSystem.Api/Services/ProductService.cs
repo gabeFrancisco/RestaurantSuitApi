@@ -29,6 +29,7 @@ namespace RecantosSystem.Api.Services
         {
             var products = await _context.Products
                 .Where(product => product.WorkGroupId == this.WorkGroupId)
+                .Include(x => x.Category)
                 .ToListAsync();
 
             return _mapper.Map<List<ProductDTO>>(products);
@@ -41,9 +42,13 @@ namespace RecantosSystem.Api.Services
                 throw new NullReferenceException("Data transfer object is null!");
             }
 
+            var category = await _context.Categories
+                .FirstOrDefaultAsync(cat => cat.Id == productDto.CategoryId);
+
             var product = _mapper.Map<ProductDTO, Product>(productDto);
             product.WorkGroupId = this.WorkGroupId;
             product.CreatedAt = DateTime.UtcNow;
+            product.Category = category;
 
             _context.Products.Add(product);
             await _context.SaveChangesAsync();
