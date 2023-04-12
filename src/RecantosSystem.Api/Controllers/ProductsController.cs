@@ -33,5 +33,16 @@ namespace RecantosSystem.Api.Controllers
 
             return Ok(await _productService.AddAsync(productDto));
         }
+
+        [HttpPut]
+        public async Task<IActionResult> Put([FromBody] ProductDTO productDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            return Ok(await _productService.UpdateAsync(productDto, productDto.Id));
+        }
     }
 }

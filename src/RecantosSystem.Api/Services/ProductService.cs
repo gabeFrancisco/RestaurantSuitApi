@@ -70,9 +70,19 @@ namespace RecantosSystem.Api.Services
             return _mapper.Map<Product, ProductDTO>(product);
         }
 
-        public Task<ProductDTO> UpdateAsync(ProductDTO entity, int id)
+        public async Task<ProductDTO> UpdateAsync(ProductDTO productDto, int id)
         {
-            throw new NotImplementedException();
+            var product = await this.GetSingleProductAsync(productDto.Id);
+            var updatedProduct = _mapper.Map<ProductDTO, Product>(productDto);
+
+            updatedProduct.UpdatedAt = DateTime.UtcNow;
+            updatedProduct.CreatedAt = product.CreatedAt;
+            updatedProduct.WorkGroupId = product.WorkGroupId;
+
+            _context.Entry(product).CurrentValues.SetValues(updatedProduct);
+            await _context.SaveChangesAsync();
+
+            return _mapper.Map<Product, ProductDTO>(updatedProduct);
         }
         public Task<bool> DeleteAsync(int id)
         {
