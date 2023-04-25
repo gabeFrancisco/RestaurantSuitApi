@@ -6,6 +6,7 @@ namespace RecantosSystem.Api.Models
 	{
 		public int Number { get; set; }
 		public int Chairs { get; set; }
+		public bool IsBusy { get; set; }
 		public virtual WorkGroup WorkGroup { get; set; }
 		[Required]
 		public int WorkGroupId { get; set; }

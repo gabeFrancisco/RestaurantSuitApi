@@ -44,5 +44,11 @@ namespace RecantosSystem.Api.Controllers
 
             return Ok(await _productService.UpdateAsync(productDto, productDto.Id));
         }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            return Ok(await _productService.DeleteAsync(id));
+        }
     }
 }

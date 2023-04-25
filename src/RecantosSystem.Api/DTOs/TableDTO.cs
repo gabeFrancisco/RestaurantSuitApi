@@ -9,5 +9,6 @@ namespace RecantosSystem.Api.DTOs
         public int Number { get; set; }
         [Required]
 		public int Chairs { get; set; }
+        public bool IsBusy { get; set; }
     }
 }

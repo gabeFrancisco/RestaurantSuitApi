@@ -84,9 +84,14 @@ namespace RecantosSystem.Api.Services
 
             return _mapper.Map<Product, ProductDTO>(updatedProduct);
         }
-        public Task<bool> DeleteAsync(int id)
+        public async Task<bool> DeleteAsync(int productId)
         {
-            throw new NotImplementedException();
+            var product = await this.GetSingleProductAsync(productId);
+
+            _context.Products.Remove(product);
+            await _context.SaveChangesAsync();
+
+            return true;
         }
     }
 }

@@ -11,86 +11,103 @@ using RecantosSystem.Api.Models;
 
 namespace RecantosSystem.Api.Services
 {
-	public class TableService : ITableService
-	{
-		private readonly AppDbContext _context;
-		private readonly IUserService _userService;
-		private readonly IMapper _mapper;
-		public TableService(AppDbContext context,
-							IUserService userService,
-							IMapper mapper)
-		{
-			_context = context;
-			_userService = userService;
-			_mapper = mapper;
-		}
+    public class TableService : ITableService
+    {
+        private readonly AppDbContext _context;
+        private readonly IUserService _userService;
+        private readonly IMapper _mapper;
+        public TableService(AppDbContext context,
+                            IUserService userService,
+                            IMapper mapper)
+        {
+            _context = context;
+            _userService = userService;
+            _mapper = mapper;
+        }
 
-		private int WorkGroupId => _userService.SelectedWorkGroup;
+        private int WorkGroupId => _userService.SelectedWorkGroup;
 
-		public async Task<IEnumerable<TableDTO>> GetAllAsync()
-		{
-			var tables = await _context.Tables
-				.Where(table => table.WorkGroupId == this.WorkGroupId)
-				.ToListAsync();
+        public async Task<IEnumerable<TableDTO>> GetAllAsync()
+        {
+            var tables = await _context.Tables
+                .Where(table => table.WorkGroupId == this.WorkGroupId)
+                .ToListAsync();
 
-			return _mapper.Map<List<TableDTO>>(tables);
-		}
+            return _mapper.Map<List<TableDTO>>(tables);
+        }
 
-		private async Task<Table> GetSingleTableAsync(int tableId)
-		{
-			return await _context.Tables
-				.FirstOrDefaultAsync(
-					table => table.Id == tableId
-					&& table.WorkGroupId == this.WorkGroupId
-				);
-		}
+        private async Task<Table> GetSingleTableAsync(int tableId)
+        {
+            return await _context.Tables
+                .FirstOrDefaultAsync(
+                    table => table.Id == tableId
+                    && table.WorkGroupId == this.WorkGroupId
+                );
+        }
 
-		public async Task<TableDTO> GetAsync(int id)
-		{
-			var table = await this.GetSingleTableAsync(id);
-			return _mapper.Map<Table, TableDTO>(table);
-		}
+        public async Task<TableDTO> GetAsync(int id)
+        {
+            var table = await this.GetSingleTableAsync(id);
+            return _mapper.Map<Table, TableDTO>(table);
+        }
 
-		public async Task<TableDTO> AddAsync(TableDTO tableDto)
-		{
-			if (tableDto == null)
-			{
-				throw new NullReferenceException("Table data transfer is null");
-			}
+        public async Task<TableDTO> AddAsync(TableDTO tableDto)
+        {
+            if (tableDto == null)
+            {
+                throw new NullReferenceException("Table data transfer is null");
+            }
 
-			var table = _mapper.Map<TableDTO, Table>(tableDto);
-			table.WorkGroupId = this.WorkGroupId;
-			table.CreatedAt = DateTime.UtcNow;
+            var table = _mapper.Map<TableDTO, Table>(tableDto);
+            table.WorkGroupId = this.WorkGroupId;
+            table.CreatedAt = DateTime.UtcNow;
 
-			_context.Tables.Add(table);
-			await _context.SaveChangesAsync();
+            _context.Tables.Add(table);
+            await _context.SaveChangesAsync();
 
-			return tableDto;
-		}
+            return tableDto;
+        }
 
-		public async Task<TableDTO> UpdateAsync(TableDTO tableDto, int id)
-		{
-			var table = await this.GetSingleTableAsync(id);
-			var updatedTable = _mapper.Map<TableDTO, Table>(tableDto);
+        public async Task<TableDTO> UpdateAsync(TableDTO tableDto, int id)
+        {
+            var table = await this.GetSingleTableAsync(id);
+            var updatedTable = _mapper.Map<TableDTO, Table>(tableDto);
 
-			updatedTable.UpdatedAt = DateTime.UtcNow;
-			updatedTable.CreatedAt = table.CreatedAt;
-			updatedTable.WorkGroupId = this.WorkGroupId;
+            updatedTable.UpdatedAt = DateTime.UtcNow;
+            updatedTable.CreatedAt = table.CreatedAt;
+            updatedTable.WorkGroupId = this.WorkGroupId;
 
-			_context.Entry(table).CurrentValues.SetValues(updatedTable);
-			await _context.SaveChangesAsync();
+            _context.Entry(table).CurrentValues.SetValues(updatedTable);
+            await _context.SaveChangesAsync();
 
-			return _mapper.Map<Table, TableDTO>(updatedTable);
-		}
+            return _mapper.Map<Table, TableDTO>(updatedTable);
+        }
 
-		public async Task<bool> DeleteAsync(int id)
-		{
-			var table = await this.GetSingleTableAsync(id);
+        public async Task<bool> DeleteAsync(int id)
+        {
+            var table = await this.GetSingleTableAsync(id);
 
-			_context.Tables.Remove(table);
-			await _context.SaveChangesAsync();
+            _context.Tables.Remove(table);
+            await _context.SaveChangesAsync();
 
-			return true;
-		}
-	}
+            return true;
+        }
+
+        public async Task<bool> SetIsBusy(int tableId, bool state, bool confirm)
+        {
+            var table = await this.GetSingleTableAsync(tableId);
+            var hasOrderSheet = await _context
+                .OrderSheets.AnyAsync(x => x.TableId == tableId);
+
+			if(hasOrderSheet && !confirm){
+                return false;
+            }
+			else{
+                table.IsBusy = state;
+                await _context.SaveChangesAsync();
+            }
+
+            return true;
+        }
+    }
 }
