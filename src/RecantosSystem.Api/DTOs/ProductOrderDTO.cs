@@ -13,7 +13,7 @@ namespace RecantosSystem.Api.DTOs
         public int OrderSheetId { get; set; }
         [Required]
         public int ProductId { get; set; }
-        public Product Product { get; set; }
+        public ProductDTO Product { get; set; }
 		public int Quantity { get; set; }
     }
 }
