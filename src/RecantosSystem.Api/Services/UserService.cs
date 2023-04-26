@@ -120,7 +120,7 @@ namespace RecantosSystem.Api.Services
                 throw new InvalidOperationException("Password is incorrect");
             }
 
-            user.Password = "";
+            user.Password = "plant some pines right?";
             _accessor.HttpContext.Response.Headers["x-workGroup-id"] = user.LastUserWorkGroup.ToString();
 
             var cookiesOptions = new CookieOptions

@@ -22,6 +22,8 @@ namespace RecantosSystem.Api.DTOs.Mappings
                 .ForMember(x => x.Hour, y => y.MapFrom(e => e.EventDate.Hour))
                 .ForMember(x => x.Minutes, y => y.MapFrom(e => e.EventDate.Minute))
                 .ReverseMap();
+
+            CreateMap<OrderSheet, OrderSheetDTO>().ReverseMap();
         }
     }
 }
