@@ -12,6 +12,7 @@ namespace RecantosSystem.Api.Models
 		public IEnumerable<ProductOrder> ProductOrders { get; set; }
 		public int CustomerId { get; set; }
 		public virtual Customer Customer { get; set; }
+		public int UserId { get; set; }
 		public virtual WorkGroup WorkGroup { get; set; }
 		[Required]
 		public int WorkGroupId { get; set; }

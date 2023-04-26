@@ -62,6 +62,7 @@ namespace RecantosSystem.Api.Services
 
             orderSheet.WorkGroupId = this.WorkGroupId;
             orderSheet.CreatedAt = DateTime.UtcNow;
+            orderSheet.UserId = _userService.UserId;
 
             _context.OrderSheets.Add(orderSheet);
             await _context.SaveChangesAsync();
