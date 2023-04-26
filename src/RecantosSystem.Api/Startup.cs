@@ -82,6 +82,7 @@ namespace RecantosSystem.Api
             services.AddScoped<IWorkGroupService, WorkGroupService>();
             services.AddScoped<IEventService, EventService>();
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IOrderService, OrderService>();
 
             // Bellow is the Jwt Bearer config.
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

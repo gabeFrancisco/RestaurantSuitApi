@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using RecantosSystem.Api.Context;
 using RecantosSystem.Api.DTOs;
 using RecantosSystem.Api.Interfaces;
+using RecantosSystem.Api.Models;
 
 namespace RecantosSystem.Api.Services
 {
@@ -28,14 +29,44 @@ namespace RecantosSystem.Api.Services
                 .Where(order => order.WorkGroupId == this.WorkGroupId)
                 .Include(x => x.Customer)
                 .Include(x => x.Table)
+                .Include(x => x.ProductOrders)
+                    .ThenInclude(x => x.Product)
+                    .ThenInclude(x => x.Category)
                 .ToListAsync();
 
             return _mapper.Map<List<OrderSheetDTO>>(orderSheets);
         }
 
-        public async Task<OrderSheetDTO> AddAsync(OrderSheetDTO entity)
+        public async Task<OrderSheetDTO> AddAsync(OrderSheetDTO orderSheetDto)
         {
-            throw new NotImplementedException();
+            if (orderSheetDto == null)
+            {
+                throw new NullReferenceException("Data transfer object is null!");
+            }
+
+            var orderSheet = _mapper.Map<OrderSheetDTO, OrderSheet>(orderSheetDto);
+            orderSheet.Table = await _context.Tables
+                .FirstOrDefaultAsync(table => table.Id == orderSheetDto.TableId);
+
+            if (orderSheetDto.CustomerId != null)
+            {
+                orderSheet.Customer = await _context.Customers
+                    .FirstOrDefaultAsync(customer => customer.Id == orderSheetDto.CustomerId);
+            }
+
+            foreach (var order in orderSheet.ProductOrders)
+            {
+                order.CreatedAt = DateTime.UtcNow;
+                order.WorkGroupId = this.WorkGroupId;
+            }
+
+            orderSheet.WorkGroupId = this.WorkGroupId;
+            orderSheet.CreatedAt = DateTime.UtcNow;
+
+            _context.OrderSheets.Add(orderSheet);
+            await _context.SaveChangesAsync();
+
+            return orderSheetDto;
         }
 
         public Task<bool> DeleteAsync(int id)

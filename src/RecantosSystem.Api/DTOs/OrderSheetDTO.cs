@@ -12,8 +12,10 @@ namespace RecantosSystem.Api.DTOs
         public int Id { get; set; }
         [Required]
         public int TableId { get; set; }
+        public Table Table { get; set; }
         [Required]
-		public IEnumerable<ProductOrder> Orders { get; set; }
-		public int CustomerId { get; set; }
+		public IEnumerable<ProductOrderDTO> ProductOrders { get; set; }
+		public int? CustomerId { get; set; }
+        public Customer Customer { get; set; }
     }
 }
