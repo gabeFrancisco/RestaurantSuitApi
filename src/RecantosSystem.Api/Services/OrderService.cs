@@ -16,12 +16,17 @@ namespace RecantosSystem.Api.Services
         private readonly AppDbContext _context;
         private readonly IMapper _mapper;
         private readonly IUserService _userService;
+        private readonly ITableService _tableService;
         private int WorkGroupId => _userService.SelectedWorkGroup;
-        public OrderService(AppDbContext context, IMapper mapper, IUserService userService)
+        public OrderService(AppDbContext context, 
+                            IMapper mapper, 
+                            IUserService userService,
+                            ITableService tableService)
         {
             _context = context;
             _mapper = mapper;
             _userService = userService;
+            _tableService = tableService;
         }
         public async Task<IEnumerable<OrderSheetDTO>> GetAllAsync()
         {
@@ -63,6 +68,8 @@ namespace RecantosSystem.Api.Services
             orderSheet.WorkGroupId = this.WorkGroupId;
             orderSheet.CreatedAt = DateTime.UtcNow;
             orderSheet.OpenBy = _userService.GetActualUser().Result.Username;
+           
+            await _tableService.SetIsBusy(orderSheet.TableId, true, true);
 
             _context.OrderSheets.Add(orderSheet);
             await _context.SaveChangesAsync();
