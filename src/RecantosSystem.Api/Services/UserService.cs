@@ -65,7 +65,7 @@ namespace RecantosSystem.Api.Services
                 .Where(user => user.Id == id)
                 .SingleOrDefaultAsync();
 
-            user.Password = "";
+            // user.Password = "plant some pines right?";
             return user;
         }
 
