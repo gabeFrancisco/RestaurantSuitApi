@@ -19,4 +19,6 @@ namespace RecantosSystem.Api.Models
 		[Required]
 		public int WorkGroupId { get; set; }
 	}
+	
+
 }

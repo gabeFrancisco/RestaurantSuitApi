@@ -18,8 +18,8 @@ namespace RecantosSystem.Api.Services
         private readonly IUserService _userService;
         private readonly ITableService _tableService;
         private int WorkGroupId => _userService.SelectedWorkGroup;
-        public OrderService(AppDbContext context, 
-                            IMapper mapper, 
+        public OrderService(AppDbContext context,
+                            IMapper mapper,
                             IUserService userService,
                             ITableService tableService)
         {
@@ -56,19 +56,20 @@ namespace RecantosSystem.Api.Services
             if (orderSheetDto.CustomerId != null)
             {
                 orderSheet.Customer = await _context.Customers
-                    .FirstOrDefaultAsync(customer => customer.Id == orderSheetDto.CustomerId);
+                    .FirstOrDefaultAsync(customer => customer.Id == orderSheetDto.CustomerId) ?? null;
             }
 
             foreach (var order in orderSheet.ProductOrders)
             {
                 order.CreatedAt = DateTime.UtcNow;
                 order.WorkGroupId = this.WorkGroupId;
+                order.Product = null;
             }
 
             orderSheet.WorkGroupId = this.WorkGroupId;
             orderSheet.CreatedAt = DateTime.UtcNow;
             orderSheet.OpenBy = _userService.GetActualUser().Result.Username;
-           
+
             await _tableService.SetIsBusy(orderSheet.TableId, true, true);
 
             _context.OrderSheets.Add(orderSheet);
@@ -81,7 +82,7 @@ namespace RecantosSystem.Api.Services
         {
             throw new NotImplementedException();
         }
-        
+
         public Task<OrderSheetDTO> GetAsync(int id)
         {
             throw new NotImplementedException();
